@@ -54,402 +54,397 @@ type StoryPage = {
 const storyPages: Record<PageId, StoryPage> = {
   start: {
     chapter: "Page 1",
-    title: "A clearing, three plans, one hungry problem",
+    title: "Help the pigs build a house",
     paragraphs: [
-      "The three little pigs have found a sunny clearing at the edge of the woods. The youngest wants a home before lunch. The middle pig wants something clever. The oldest keeps watching the tree line, where the big bad wolf is said to roam.",
-      "You are the pig in charge of the build. Choose where to begin, and turn each page carefully: speed helps, but strength keeps the family safe.",
+      "The three little pigs need a safe home before the wolf comes.",
+      "Pick what they should build with. A strong house will keep everyone safe.",
     ],
-    house: "An empty patch of grass",
-    wolf: "Rumored beyond the pines",
+    house: "An empty yard",
+    wolf: "Far away",
     progress: 4,
     choices: [
       {
-        label: "Race to the meadow for armfuls of straw",
+        label: "Build with straw",
         next: "meadow-straw",
-        hint: "Fast walls, but they will need help.",
+        hint: "Straw is fast, but it is not very strong.",
       },
       {
-        label: "Gather fallen branches in the pine grove",
+        label: "Build with sticks",
         next: "forest-sticks",
-        hint: "A useful frame if you build it carefully.",
+        hint: "Sticks are better, but they need extra work.",
       },
       {
-        label: "Walk the long road to the old brickyard",
+        label: "Build with bricks",
         next: "brickyard",
-        hint: "Slow work with the best chance to hold.",
+        hint: "Bricks take longer, but they are strong.",
       },
     ],
   },
   "meadow-straw": {
     chapter: "Page 2",
-    title: "Golden straw in a hurry",
+    title: "A quick straw house",
     paragraphs: [
-      "By noon the meadow is bright with straw. You stack it high, twist it into ropes, and have a cozy hut before the kettle boils.",
-      "It smells sweet and looks cheerful, but every breeze makes the walls whisper. A small snout-shaped shadow passes between the trees.",
+      "The pigs make a little straw house very quickly.",
+      "It looks cozy, but the walls shake when the wind blows.",
     ],
-    house: "Warm straw walls, loosely tied",
-    wolf: "Sniffing closer",
+    house: "A straw house",
+    wolf: "Getting closer",
     progress: 24,
     choices: [
       {
-        label: "Patch the gaps with mud and ask your siblings for advice",
+        label: "Patch the holes with mud",
         next: "muddy-repair",
-        hint: "Slow down and strengthen the weak spots.",
+        hint: "Try to make the straw house stronger.",
       },
       {
-        label: "Call it finished and decorate the door",
+        label: "Say the house is done",
         next: "wolf-first-huff",
-        hint: "Trust speed and hope the wolf keeps walking.",
+        hint: "This is quick, but it may not be safe.",
       },
       {
-        label: "Trade leftover straw for bricks at the market road",
+        label: "Trade straw for bricks",
         next: "market-trade",
-        hint: "Turn a fragile start into sturdy supplies.",
+        hint: "Start over with stronger stuff.",
       },
     ],
   },
   "muddy-repair": {
     chapter: "Page 3",
-    title: "Mud on the hooves",
+    title: "Patch the straw house",
     paragraphs: [
-      "Mud fills the cracks, and your siblings admit the hut feels less drafty. Still, the oldest pig presses one hoof against the wall and frowns.",
-      "\"This will buy time,\" she says, \"but time is only useful if we spend it building something better.\"",
+      "The pigs push mud into the holes. The house feels a little better.",
+      "The oldest pig says, 'Good try! But bricks would be much safer.'",
     ],
-    house: "Straw sealed with mud",
-    wolf: "Testing the wind",
+    house: "A patched straw house",
+    wolf: "Sniffing the air",
     progress: 38,
     choices: [
       {
-        label: "Trade straw bundles for bricks before sunset",
+        label: "Trade the straw for bricks",
         next: "market-trade",
-        hint: "Convert quick work into better materials.",
+        hint: "Use stronger building pieces.",
       },
       {
-        label: "Ask neighbors to help rebuild together",
+        label: "Ask friends to help build",
         next: "neighbor-help",
-        hint: "Many hooves can make a safer house.",
+        hint: "Many helpers can build faster.",
       },
     ],
   },
   "market-trade": {
     chapter: "Page 4",
-    title: "A cart full of second chances",
+    title: "A cart of bricks",
     paragraphs: [
-      "The market road is dusty, but a mason needs straw for packing jars. You trade every golden bundle for chipped bricks, a scoop of lime, and a warning.",
-      "\"Stack them on a true foundation,\" the mason says. \"A wall is only as brave as the ground beneath it.\"",
+      "The pigs trade their straw for red bricks.",
+      "A builder tells them, 'Put bricks on flat ground. Then they will stand tall.'",
     ],
-    house: "Bricks stacked beside a straw frame",
-    wolf: "Following hoofprints",
+    house: "A cart full of bricks",
+    wolf: "Following the trail",
     progress: 45,
     choices: [
       {
-        label: "Dig and level a proper foundation",
+        label: "Make a flat foundation",
         next: "foundation",
-        hint: "The careful path to a house that holds.",
+        hint: "A house needs a strong bottom.",
       },
       {
-        label: "Mix mortar now and build upward quickly",
+        label: "Start stacking bricks",
         next: "mortar-mix",
-        hint: "Useful, but the base still matters.",
+        hint: "Build the walls, but remember the base matters too.",
       },
     ],
   },
   "wolf-first-huff": {
     chapter: "Page 5",
-    title: "Knock, knock, little pig",
+    title: "The wolf knocks",
     paragraphs: [
-      "A heavy paw taps the door. The big bad wolf smiles through the reeds. \"Little pig, little pig, let me come in.\"",
-      "The straw rustles around you. A clever answer might buy a moment, but the house itself must answer the huff and puff.",
+      "Tap, tap, tap! The wolf is at the straw door.",
+      "He takes a big breath. The pigs need a smarter plan now.",
     ],
-    house: "Pretty straw hut",
-    wolf: "At the doorstep",
+    house: "A weak straw house",
+    wolf: "At the door",
     progress: 28,
     choices: [
       {
-        label: "Run out the back and rebuild with your siblings",
+        label: "Run to the other pigs",
         next: "neighbor-help",
-        hint: "Lose the hut, save the plan.",
+        hint: "Leave the weak house and work together.",
       },
       {
-        label: "Stand firm behind the straw door",
+        label: "Hide behind the straw door",
         next: "straw-collapse",
-        hint: "The classic mistake.",
-      },
-      {
-        label: "Weave more straw over the roof",
-        next: "straw-collapse",
-        hint: "More of the same will not stop the wolf.",
+        hint: "The straw door is too weak.",
       },
     ],
   },
   "forest-sticks": {
     chapter: "Page 2",
-    title: "Branches, twine, and a square corner",
+    title: "A house made of sticks",
     paragraphs: [
-      "The pine grove offers straight sticks, springy branches, and long vines for tying. Your frame rises quickly, taller and sharper than a straw hut.",
-      "The middle pig grins at the clever joints. The oldest pig checks the corners and asks the question nobody likes: \"What happens when the wolf leans on it?\"",
+      "The pigs pick up sticks in the woods and build a frame.",
+      "It is stronger than straw, but it still wobbles when they push it.",
     ],
-    house: "Stick frame with open seams",
-    wolf: "Circling the grove",
+    house: "A stick frame",
+    wolf: "Walking through the woods",
     progress: 30,
     choices: [
       {
-        label: "Skip the foundation and close the walls before dusk",
+        label: "Finish it fast",
         next: "shortcut-frame",
-        hint: "A tempting shortcut with weak roots.",
+        hint: "Fast work can make a weak house.",
       },
       {
-        label: "Lash cross braces into every wall",
+        label: "Add strong cross pieces",
         next: "cross-brace",
-        hint: "Make the frame resist shaking.",
+        hint: "Extra sticks can stop the walls from shaking.",
       },
       {
-        label: "Invite both siblings to combine supplies",
+        label: "Ask the other pigs to help",
         next: "neighbor-help",
-        hint: "Teamwork can cover more weaknesses.",
+        hint: "Teamwork makes the job easier.",
       },
     ],
   },
   "cross-brace": {
     chapter: "Page 3",
-    title: "Triangles against trouble",
+    title: "Make the stick house stronger",
     paragraphs: [
-      "You lash diagonal braces through the frame until every wall is full of triangles. When the wind blows, the house creaks but does not sway.",
-      "The chimney is still only a clay pipe, and the wolf is famous for finding the one opening nobody watched.",
+      "The pigs tie extra sticks across the walls. Now the house shakes less.",
+      "They still need to close the windows and the chimney before the wolf comes.",
     ],
-    house: "Braced timber shell",
-    wolf: "Listening at the chimney",
+    house: "A stronger stick house",
+    wolf: "Near the trees",
     progress: 52,
     choices: [
       {
-        label: "Add a chimney watch and shutters",
+        label: "Cover the chimney and windows",
         next: "chimney-watch",
-        hint: "Protect the gaps a wolf might exploit.",
+        hint: "Close every opening.",
       },
       {
-        label: "Skin the frame with brick and clay",
+        label: "Add bricks around the sticks",
         next: "foundation",
-        hint: "Turn the frame into a permanent home.",
+        hint: "Make the house much stronger.",
       },
     ],
   },
   "shortcut-frame": {
     chapter: "Ending",
-    title: "A house that almost held",
+    title: "The stick house falls",
     paragraphs: [
-      "The stick walls look finished from the path, but the posts only sit on soft dirt. When the wolf huffs, the corners hop. When he puffs, the roof twists.",
-      "You and your siblings escape through a window, wiser and muddy. The wolf does not get supper, but this is not yet the safe home you promised.",
+      "The pigs finish too fast. The sticks are not held down well.",
+      "The wolf huffs and puffs. The house falls, but the pigs run away safely.",
     ],
-    house: "Collapsed stick frame",
-    wolf: "Laughing in the dust",
+    house: "A fallen stick house",
+    wolf: "Laughing outside",
     progress: 32,
     ending: "danger",
   },
   brickyard: {
     chapter: "Page 2",
-    title: "The slow road to strong walls",
+    title: "The best bricks",
     paragraphs: [
-      "The old brickyard is farther than the meadow, and the cart squeaks with every load. But each brick feels like a small promise.",
-      "A retired mason watches you count them. \"A brick house is not just bricks,\" he says. \"It is level ground, patient mortar, and no loose openings.\"",
+      "The pigs pull a cart to the brickyard. The bricks are heavy.",
+      "Heavy work takes time, but the pigs know bricks can make a safe house.",
     ],
-    house: "Heavy cart of red bricks",
-    wolf: "Still distant, but hungry",
+    house: "A cart of bricks",
+    wolf: "Still far away",
     progress: 22,
     choices: [
       {
-        label: "Lay the foundation before touching the walls",
+        label: "Make a flat foundation",
         next: "foundation",
-        hint: "Start with the part nobody sees.",
+        hint: "Start with the strong bottom of the house.",
       },
       {
-        label: "Stack bricks dry to save time",
+        label: "Stack bricks without mortar",
         next: "damp-bricks",
-        hint: "Fast brickwork can still fail.",
+        hint: "Loose bricks can fall over.",
       },
       {
-        label: "Ask the mason for a proper mortar recipe",
+        label: "Learn to mix mortar",
         next: "mortar-mix",
-        hint: "Learn the craft before racing ahead.",
+        hint: "Mortar is sticky stuff that holds bricks together.",
       },
     ],
   },
   "damp-bricks": {
     chapter: "Page 3",
-    title: "A wall with a wobble",
+    title: "Wobbly bricks",
     paragraphs: [
-      "The dry bricks climb quickly, but the first corner shivers when you press it. The youngest pig says it looks finished. The oldest says a finished mistake is still a mistake.",
-      "A low howl rolls over the field. There is time to fix this, if you are willing to undo your own work.",
+      "The pigs stack the bricks without mortar. The wall goes up fast.",
+      "Then one corner wobbles. That is not safe.",
     ],
-    house: "Dry-stacked brick wall",
-    wolf: "Howling nearer",
+    house: "A wobbly brick wall",
+    wolf: "Howling closer",
     progress: 40,
     choices: [
       {
-        label: "Take down the wobbly wall and mix mortar",
+        label: "Take it down and add mortar",
         next: "mortar-mix",
-        hint: "Recover by doing the craft properly.",
+        hint: "Fix the wall the right way.",
       },
       {
-        label: "Ignore the wobble and rush the roof",
+        label: "Keep rushing",
         next: "shortcut-frame",
-        hint: "A weak wall is a hidden trap.",
+        hint: "Rushing can make the house fall.",
       },
     ],
   },
   foundation: {
     chapter: "Page 4",
-    title: "The strength below the story",
+    title: "A strong bottom",
     paragraphs: [
-      "You dig until the soft topsoil gives way to packed earth. Flat stones make a level ring, and the first course of bricks sits square on top.",
-      "No song is written about foundations, but the house already feels calmer. Even the birds seem to perch with confidence.",
+      "The pigs make the ground flat and put stones in a neat square.",
+      "Now the brick walls will have a strong place to stand.",
     ],
-    house: "Level stone-and-brick foundation",
-    wolf: "Picking up speed",
+    house: "A flat foundation",
+    wolf: "Coming faster",
     progress: 62,
     choices: [
       {
-        label: "Mix mortar and raise the walls",
+        label: "Add mortar and build walls",
         next: "mortar-mix",
-        hint: "Bind the bricks into one solid shelter.",
+        hint: "Stick the bricks together.",
       },
       {
-        label: "Plan a hidden back door before the walls close",
+        label: "Make a secret back door",
         next: "hidden-door",
-        hint: "Safety is stronger with a backup route.",
+        hint: "A second door can help everyone feel safe.",
       },
     ],
   },
   "mortar-mix": {
     chapter: "Page 5",
-    title: "Sand, lime, water, patience",
+    title: "Sticky mortar",
     paragraphs: [
-      "You stir mortar until it is smooth as porridge and lay each brick with a tap-tap-tap. The walls climb slower than a wish, but straighter than fear.",
-      "By sunset the three pigs can stand inside together. The wolf can smell dinner, yet the house smells like rain on stone.",
+      "The pigs mix sand, lime, and water. The mortar gets thick and sticky.",
+      "They put mortar between every brick. The walls grow strong.",
     ],
-    house: "Brick walls bound with mortar",
-    wolf: "Crossing the meadow",
+    house: "Strong brick walls",
+    wolf: "Crossing the grass",
     progress: 76,
     choices: [
       {
-        label: "Call the siblings in for the roof and shutters",
+        label: "Ask everyone to help finish",
         next: "neighbor-help",
-        hint: "Finish faster without sacrificing strength.",
+        hint: "Finish the roof and door together.",
       },
       {
-        label: "Secure the chimney and test every latch",
+        label: "Check the chimney and locks",
         next: "chimney-watch",
-        hint: "Close the wolf's favorite openings.",
+        hint: "Make sure the wolf cannot sneak in.",
       },
     ],
   },
   "neighbor-help": {
     chapter: "Page 6",
-    title: "Three pigs, one house",
+    title: "Everyone helps",
     paragraphs: [
-      "The youngest hauls water. The middle pig measures rafters. The oldest checks each line before it sets. Together, the work becomes music: scrape, tap, lift, laugh.",
-      "The house gains a roof, shutters, and a stout door with a bar across it. Best of all, everyone knows where to stand when trouble arrives.",
+      "All three pigs work together. One carries bricks. One mixes mortar. One checks the door.",
+      "Soon the house has a roof, shutters, and a strong front door.",
     ],
-    house: "Nearly complete family house",
-    wolf: "Visible between the trees",
+    house: "An almost finished house",
+    wolf: "At the edge of the yard",
     progress: 86,
     choices: [
       {
-        label: "Add a hidden back door and pantry latch",
+        label: "Make a secret back door",
         next: "hidden-door",
-        hint: "Prepare for more than one kind of danger.",
+        hint: "It is good to have a backup plan.",
       },
       {
-        label: "Light the hearth low and wait together",
+        label: "Wait inside together",
         next: "night-watch",
-        hint: "Face the wolf from inside the finished home.",
+        hint: "Stay calm in the strong house.",
       },
     ],
   },
   "chimney-watch": {
     chapter: "Page 6",
-    title: "The hole the wolf remembers",
+    title: "Check every opening",
     paragraphs: [
-      "You cap the chimney with iron bars, bank the fire safely, and test the shutters until each one thuds shut. A pot of soup simmers just below the flue.",
-      "If the wolf tries the old climb-down trick, he will find smoke, soup steam, and three pigs who read the whole story before he arrived.",
+      "The pigs lock the shutters and cover the chimney.",
+      "Now the wolf has no easy way inside.",
     ],
-    house: "Brick home with guarded openings",
-    wolf: "Studying the roof",
+    house: "A locked brick house",
+    wolf: "Looking at the roof",
     progress: 90,
     choices: [
       {
-        label: "Gather the family for the final night watch",
+        label: "Wait inside together",
         next: "night-watch",
-        hint: "Stay calm when the huffing begins.",
+        hint: "Let the strong house do its job.",
       },
       {
-        label: "Finish the escape latch as one last precaution",
+        label: "Add a secret back door",
         next: "hidden-door",
-        hint: "Redundancy makes courage easier.",
+        hint: "One more safe idea before night.",
       },
     ],
   },
   "hidden-door": {
     chapter: "Page 6",
-    title: "A quiet latch in the pantry",
+    title: "A secret back door",
     paragraphs: [
-      "Behind the pantry shelves, you fit a narrow door that opens into the herb garden. It is not for running from the house. It is for choosing your own path if the wolf blocks the front.",
-      "With the latch hidden and the shelves back in place, the house feels less like a trap and more like a plan.",
+      "The pigs make a small door behind the pantry shelf.",
+      "They hope they will not need it, but it helps them feel ready.",
     ],
-    house: "Brick home with a secret exit",
+    house: "A brick house with a secret door",
     wolf: "Almost at the gate",
     progress: 92,
     choices: [
       {
-        label: "Lock in and begin the night watch",
+        label: "Start the night watch",
         next: "night-watch",
-        hint: "The final test is here.",
+        hint: "The big test is here.",
       },
     ],
   },
   "night-watch": {
     chapter: "Page 7",
-    title: "Huff, puff, and hold",
+    title: "Huff and puff",
     paragraphs: [
-      "Moonlight turns the clearing silver. The big bad wolf plants his paws outside your new door and fills his chest with air.",
-      "\"Little pigs, little pigs, let me come in!\" he growls. Inside, the bricks are cool, the mortar is set, and three brave pigs stand together.",
+      "The wolf stands outside and takes a huge breath.",
+      "Inside, the pigs hold hands. Their brick house is ready.",
     ],
-    house: "Finished brick house",
-    wolf: "At full huff and puff",
+    house: "A finished brick house",
+    wolf: "Huffing and puffing",
     progress: 98,
     choices: [
       {
-        label: "Keep the fire low, lock the shutters, and stay quiet",
+        label: "Stay quiet and trust the house",
         next: "safe-home",
-        hint: "Let the house answer for you.",
+        hint: "The strong house can protect the pigs.",
       },
       {
-        label: "Boast from the window about how clever you are",
+        label: "Open the window and tease the wolf",
         next: "straw-collapse",
-        hint: "Safety can be undone by a careless choice.",
+        hint: "Teasing is not a safe choice.",
       },
     ],
   },
   "safe-home": {
     chapter: "Ending",
-    title: "Safe inside the house you built",
+    title: "Safe at home",
     paragraphs: [
-      "The wolf huffs. The wolf puffs. The door shudders, the shutters rattle, and the chimney coughs smoke back into the night. But the bricks hold.",
-      "At dawn, the wolf limps away to bother easier stories. The three pigs share soup by the hearth, proud not because the house was fast, but because every choice made it safer.",
+      "The wolf huffs. The wolf puffs. The brick house does not fall.",
+      "In the morning, the wolf is gone. The pigs cheer and eat warm soup together.",
     ],
-    house: "Complete, warm, wolf-proof home",
-    wolf: "Gone before breakfast",
+    house: "A safe brick home",
+    wolf: "Gone",
     progress: 100,
     ending: "safe",
   },
   "straw-collapse": {
     chapter: "Ending",
-    title: "A lesson in loose ends",
+    title: "Try again",
     paragraphs: [
-      "The wolf huffs, puffs, and finds the weak place you left behind. Straw flies, shutters bang, and your plan scatters across the clearing.",
-      "The pigs escape with muddy hooves and racing hearts. Next time, they will build with patience, teamwork, and something stronger than hope.",
+      "The wolf finds the weak spot. The house breaks apart.",
+      "The pigs run away safely. Next time, they will build slowly and use stronger things.",
     ],
-    house: "Blown open by the wolf",
-    wolf: "Too close for comfort",
+    house: "A broken house",
+    wolf: "Too close",
     progress: 18,
     ending: "danger",
   },
@@ -518,8 +513,8 @@ export default function HomePage() {
               The Three Little Pigs
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-700 sm:mt-3 sm:text-base sm:leading-7">
-              Turn the story page by page, choose how to build, and guide the
-              pigs toward a finished home that can outlast the big bad wolf.
+              Read the story page by page. Pick simple choices and help the
+              pigs build a safe brick home before the wolf arrives.
             </p>
           </div>
           <div className="grid min-w-0 grid-cols-2 gap-3 text-sm sm:grid-cols-3 md:min-w-80">
@@ -582,7 +577,7 @@ export default function HomePage() {
 
               <div className="space-y-3">
                 <h3 className="text-lg font-black text-stone-950">
-                  What happens next?
+                  What should the pigs do?
                 </h3>
                 {page.choices?.map((choice) => (
                   <button
@@ -600,8 +595,7 @@ export default function HomePage() {
                   </button>
                 )) ?? (
                   <div className="rounded-2xl border border-stone-200 bg-stone-50 p-4 text-sm leading-6 break-words text-stone-700">
-                    This path has reached its ending. Start over to try a new
-                    set of choices.
+                    This ending is done. Start over to try another choice.
                   </div>
                 )}
               </div>
@@ -653,7 +647,7 @@ export default function HomePage() {
                 <StateRow label="Wolf" value={page.wolf} />
                 <StateRow
                   label="Goal"
-                  value="Complete a strong home and stay safe through the night."
+                  value="Build a strong brick home and stay safe."
                 />
               </dl>
             </section>
