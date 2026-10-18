@@ -1,0 +1,104 @@
+{
+  "apiVersion": "v1.2",
+  "arguments": {
+    "PROJECT_NAME": "storytime",
+    "PROJECT_REGION": "europe-west",
+    "SERVICE_NAME": "storytime",
+    "SERVICE_INSTANCES": "1",
+    "DEPLOYMENT_PLAN": "nf-compute-10",
+    "BUILD_PLAN": "nf-compute-400-16",
+    "GIT_REPO": "https://github.com/alansimph/storytime",
+    "GIT_BRANCH": "main"
+  },
+  "spec": {
+    "kind": "Workflow",
+    "spec": {
+      "type": "sequential",
+      "steps": [
+        {
+          "kind": "Project",
+          "ref": "project",
+          "spec": {
+            "name": "${args.PROJECT_NAME}",
+            "color": "#F59E0B",
+            "region": "${args.PROJECT_REGION}",
+            "networking": {
+              "allowedIngressProjects": []
+            }
+          }
+        },
+        {
+          "kind": "Workflow",
+          "spec": {
+            "type": "sequential",
+            "context": {
+              "projectId": "${refs.project.id}"
+            },
+            "steps": [
+              {
+                "kind": "CombinedService",
+                "ref": "storytime",
+                "spec": {
+                  "name": "${args.SERVICE_NAME}",
+                  "deployment": {
+                    "instances": "${args.SERVICE_INSTANCES}",
+                    "storage": {
+                      "ephemeralStorage": {
+                        "storageSize": 1024
+                      },
+                      "shmSize": 64
+                    },
+                    "docker": {
+                      "configType": "default"
+                    }
+                  },
+                  "runtimeEnvironment": {
+                    "NODE_ENV": "production",
+                    "PORT": "3000"
+                  },
+                  "runtimeFiles": {},
+                  "buildArguments": {},
+                  "buildFiles": {},
+                  "billing": {
+                    "deploymentPlan": "${args.DEPLOYMENT_PLAN}",
+                    "buildPlan": "${args.BUILD_PLAN}"
+                  },
+                  "vcsData": {
+                    "projectType": "github",
+                    "projectUrl": "${args.GIT_REPO}",
+                    "projectBranch": "${args.GIT_BRANCH}"
+                  },
+                  "ports": [
+                    {
+                      "internalPort": 3000,
+                      "protocol": "HTTP",
+                      "name": "web",
+                      "public": true,
+                      "domains": [],
+                      "security": {
+                        "policies": [],
+                        "credentials": []
+                      },
+                      "disableNfDomain": false
+                    }
+                  ],
+                  "buildSettings": {
+                    "dockerfile": {
+                      "buildEngine": "buildkit",
+                      "dockerWorkDir": "/",
+                      "dockerFilePath": "/Dockerfile",
+                      "buildkit": {
+                        "useCache": true,
+                        "cacheStorageSize": 16384
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
