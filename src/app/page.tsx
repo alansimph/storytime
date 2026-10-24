@@ -41,6 +41,15 @@ type PageId =
   | "kitchen-plan"
   | "kitchen-fire"
   | "settled-home"
+  | "hooded-knock"
+  | "basket-question"
+  | "voice-question"
+  | "ears-question"
+  | "paws-question"
+  | "shadow-question"
+  | "disguise-revealed"
+  | "wolf-disguise-pounce"
+  | "wolf-outsmarted"
   | "straw-collapse";
 
 type Choice = {
@@ -103,7 +112,7 @@ type ComicScene = {
   mood: ComicMood;
   house: ComicHouse;
   details: ComicDetail[];
-  wolf?: "distant" | "near" | "huff" | "gone";
+  wolf?: "distant" | "near" | "huff" | "disguised" | "gone";
   sound?: string;
 };
 
@@ -671,14 +680,236 @@ const storyPages: Record<PageId, StoryPage> = {
     ending: "danger",
   },
   "settled-home": {
-    chapter: "Ending",
+    chapter: "Page 14",
     title: "A home ready for more than wolves",
     paragraphs: [
       "Rain falls all night, but the roof stays quiet. The barrel fills, the pump stands ready, and supper bubbles over a small steady flame in the brick hearth.",
       "The wolf prowls once around the fence, hears three pigs laughing over warm bowls, and slinks away. The house is not just strong now. It is dry, supplied, careful with fire, and truly lived in.",
+      "Just as the pigs begin to clear the bowls, three soft knocks tap the door. A bent old lady in a deep hood stands outside with a basket on her arm.",
     ],
     house: "Dry, supplied, fire-safe family home",
-    wolf: "Gone to find an easier tale",
+    wolf: "Possibly gone, possibly clever",
+    progress: 99,
+    choices: [
+      {
+        label: "Keep the bar down and ask who is knocking",
+        next: "hooded-knock",
+        hint: "A safe door lets you be polite and careful.",
+      },
+      {
+        label: "Open the door for the poor old lady",
+        next: "wolf-disguise-pounce",
+        hint: "Kindness without caution can invite danger inside.",
+      },
+    ],
+  },
+  "hooded-knock": {
+    chapter: "Page 15",
+    title: "The old lady under the hood",
+    paragraphs: [
+      "\"Good evening, little dears,\" croaks the visitor. Her hood hangs low over her face, and her basket smells of pepper, rain, and something wild.",
+      "The youngest pig reaches for the latch, but the oldest pig raises one hoof. \"We can ask questions through a locked door,\" she whispers. \"Anyone honest can answer.\"",
+    ],
+    house: "Warm house with the front door barred",
+    wolf: "Hidden under a hood",
+    progress: 99,
+    choices: [
+      {
+        label: "Ask, \"What is in your basket, Granny?\"",
+        next: "basket-question",
+        hint: "A basket can tell a story too.",
+      },
+      {
+        label: "Ask, \"Why is your voice so low and growly?\"",
+        next: "voice-question",
+        hint: "Listen before opening.",
+      },
+      {
+        label: "Unbar the door because she sounds lonely",
+        next: "wolf-disguise-pounce",
+        hint: "The hood is hiding more than wrinkles.",
+      },
+    ],
+  },
+  "basket-question": {
+    chapter: "Page 16",
+    title: "The basket that smelled wrong",
+    paragraphs: [
+      "\"Herbs and biscuits,\" says the old lady. But when she lifts the basket, the pigs hear bones click, and a tuft of gray fur sticks to the handle.",
+      "The middle pig points at the peephole. \"Biscuits do not usually scratch baskets with claws,\" he whispers.",
+    ],
+    house: "Barred door with a watchful peephole",
+    wolf: "Pretending to be patient",
+    progress: 99,
+    choices: [
+      {
+        label: "Ask, \"Why are your ears so pointy under that hood?\"",
+        next: "ears-question",
+        hint: "The hood cannot hide everything.",
+      },
+      {
+        label: "Ask, \"Why is your voice so low and growly?\"",
+        next: "voice-question",
+        hint: "Check another clue before deciding.",
+      },
+      {
+        label: "Open the door because she mentioned biscuits",
+        next: "wolf-disguise-pounce",
+        hint: "A tasty story can still be a trap.",
+      },
+    ],
+  },
+  "voice-question": {
+    chapter: "Page 16",
+    title: "A cough that sounded like a howl",
+    paragraphs: [
+      "\"A chill in my throat,\" the old lady says. Then she coughs so hard the chimney soot trembles, and the last note curls into a hungry little howl.",
+      "The youngest pig backs away from the latch. The oldest pig nods. \"A second clue,\" she says. \"Ask for proof we can see.\"",
+    ],
+    house: "Quiet house listening at the door",
+    wolf: "Growling behind a sweet voice",
+    progress: 99,
+    choices: [
+      {
+        label: "Ask, \"Please show your hands before we open.\"",
+        next: "paws-question",
+        hint: "Hands are hard to fake when they are paws.",
+      },
+      {
+        label: "Ask, \"What is in your basket, Granny?\"",
+        next: "basket-question",
+        hint: "One clue is useful; two clues are better.",
+      },
+      {
+        label: "Open the door before she coughs again",
+        next: "wolf-disguise-pounce",
+        hint: "A growl is a warning, not an invitation.",
+      },
+    ],
+  },
+  "ears-question": {
+    chapter: "Page 17",
+    title: "Two ears too sharp",
+    paragraphs: [
+      "\"All the better to hear you with,\" says the old lady, and she tugs the hood lower. But one gray ear pokes out, sharp as a roof tile.",
+      "The pigs trade a look. The story is becoming familiar, but they keep asking from behind the safe, locked door.",
+    ],
+    house: "Door still locked while clues pile up",
+    wolf: "Losing the disguise one clue at a time",
+    progress: 99,
+    choices: [
+      {
+        label: "Ask, \"Please show your hands before we open.\"",
+        next: "paws-question",
+        hint: "The next clue is right below the sleeves.",
+      },
+      {
+        label: "Ask her to step into the lantern light",
+        next: "shadow-question",
+        hint: "A shadow can tell the truth.",
+      },
+      {
+        label: "Open the door because she answered the question",
+        next: "wolf-disguise-pounce",
+        hint: "An answer is not the same as proof.",
+      },
+    ],
+  },
+  "paws-question": {
+    chapter: "Page 18",
+    title: "Hands with claws",
+    paragraphs: [
+      "\"My hands are shy,\" says the old lady. But when she reaches to adjust the basket, five long claws flash from one sleeve.",
+      "The middle pig whispers, \"Those are not knitting hands.\" The oldest pig points to the lantern by the window. \"One final question.\"",
+    ],
+    house: "Safe house with every latch still shut",
+    wolf: "Almost revealed",
+    progress: 99,
+    choices: [
+      {
+        label: "Ask her to step into the lantern light",
+        next: "shadow-question",
+        hint: "Let the light check the disguise.",
+      },
+      {
+        label: "Tell her you know she is the wolf",
+        next: "disguise-revealed",
+        hint: "The clues already point one way.",
+      },
+      {
+        label: "Open the door to inspect the claws closely",
+        next: "wolf-disguise-pounce",
+        hint: "Never inspect claws from inside their reach.",
+      },
+    ],
+  },
+  "shadow-question": {
+    chapter: "Page 19",
+    title: "The shadow on the path",
+    paragraphs: [
+      "The old lady shuffles into the lantern light. On the door curtain, her shadow grows tall: pointed ears, long snout, and a tail twitching under the cloak.",
+      "\"That is not Granny,\" says the youngest pig. \"That is a wolf wearing a story costume.\"",
+    ],
+    house: "Bright doorway with the bar still firm",
+    wolf: "Caught by his own shadow",
+    progress: 99,
+    choices: [
+      {
+        label: "Call out every clue and keep the door barred",
+        next: "disguise-revealed",
+        hint: "Naming the trick takes away its power.",
+      },
+      {
+        label: "Open the door to prove you are not afraid",
+        next: "wolf-disguise-pounce",
+        hint: "Bravery still needs a locked door.",
+      },
+    ],
+  },
+  "disguise-revealed": {
+    chapter: "Page 20",
+    title: "Not an old lady at all",
+    paragraphs: [
+      "\"Basket of bones, growly voice, pointed ears, clawed hands, wolf-shaped shadow,\" the pigs chant together. \"You are the big bad wolf!\"",
+      "The hood flies back. The wolf snarls, embarrassed and hungry, but the door is still barred, the water bucket is full, and three clever pigs are ready.",
+    ],
+    house: "Prepared home with the trick exposed",
+    wolf: "Revealed at the doorstep",
+    progress: 100,
+    choices: [
+      {
+        label: "Bang the soup pot, spray pump water, and shout for neighbors",
+        next: "wolf-outsmarted",
+        hint: "Use the safe house systems together.",
+      },
+      {
+        label: "Slip outside through the secret door to scare him",
+        next: "wolf-disguise-pounce",
+        hint: "Leaving safety gives the wolf what he wants.",
+      },
+    ],
+  },
+  "wolf-disguise-pounce": {
+    chapter: "Ending",
+    title: "The hood falls, the wolf pounces",
+    paragraphs: [
+      "The latch clicks. The old lady straightens, the hood drops, and the big bad wolf springs forward with a grin full of teeth.",
+      "The pigs tumble backward and slam the inner pantry door just in time. They survive, but the lesson is loud: when danger wears a disguise, questions belong before kindness opens the door.",
+    ],
+    house: "Strong home with one careless opening",
+    wolf: "Inside the first doorway",
+    progress: 84,
+    ending: "danger",
+  },
+  "wolf-outsmarted": {
+    chapter: "Ending",
+    title: "Questions beat the costume",
+    paragraphs: [
+      "The pigs bang the soup pot like a bell, spray a cold stream of pump water through the door slot, and shout the wolf's trick so every neighbor hears.",
+      "Wet, exposed, and outnumbered, the wolf flees into the trees with his hood flapping behind him. The pigs lock up, laugh softly, and add one more rule to the house: a safe door can be kind, curious, and closed.",
+    ],
+    house: "Dry, supplied, fire-safe, and trick-proof home",
+    wolf: "Running away in a soggy hood",
     progress: 100,
     ending: "safe",
   },
@@ -903,12 +1134,84 @@ const comicScenes: Record<PageId, ComicScene> = {
     sound: "Sizzle!",
   },
   "settled-home": {
-    caption: "The final home is dry, supplied with water, and safe for warm meals.",
+    caption: "The home is dry, supplied with water, safe for warm meals, and suddenly interrupted by a knock.",
     mood: "cozy",
     house: "kitchen",
     details: ["rain", "barrel", "pump", "fire", "soup"],
+    wolf: "disguised",
+    sound: "Knock!",
+  },
+  "hooded-knock": {
+    caption: "A hooded old lady waits outside while the pigs keep the door locked.",
+    mood: "night",
+    house: "finished",
+    details: ["shutters", "fire"],
+    wolf: "disguised",
+    sound: "Who?",
+  },
+  "basket-question": {
+    caption: "The basket clue reveals bones, scratches, and a suspicious tuft of gray fur.",
+    mood: "night",
+    house: "finished",
+    details: ["shutters", "bucket"],
+    wolf: "disguised",
+    sound: "Clue!",
+  },
+  "voice-question": {
+    caption: "The old lady's cough curls into a growly little howl.",
+    mood: "night",
+    house: "finished",
+    details: ["chimney", "smoke"],
+    wolf: "disguised",
+    sound: "Growl!",
+  },
+  "ears-question": {
+    caption: "A sharp gray ear pokes out from under the hood.",
+    mood: "night",
+    house: "finished",
+    details: ["shutters"],
+    wolf: "disguised",
+    sound: "Ears!",
+  },
+  "paws-question": {
+    caption: "Clawed paws flash from the sleeves when the visitor lifts the basket.",
+    mood: "night",
+    house: "finished",
+    details: ["bucket"],
+    wolf: "disguised",
+    sound: "Claws!",
+  },
+  "shadow-question": {
+    caption: "Lantern light throws a wolf-shaped shadow across the curtain.",
+    mood: "night",
+    house: "finished",
+    details: ["fire", "shutters"],
+    wolf: "disguised",
+    sound: "Shadow!",
+  },
+  "disguise-revealed": {
+    caption: "The pigs list the clues and reveal the big bad wolf under the hood.",
+    mood: "night",
+    house: "finished",
+    details: ["bucket", "soup"],
+    wolf: "huff",
+    sound: "Aha!",
+  },
+  "wolf-disguise-pounce": {
+    caption: "Opening the door too soon lets the disguised wolf pounce inside.",
+    mood: "storm",
+    house: "finished",
+    details: ["secret-door", "smoke"],
+    wolf: "huff",
+    sound: "Pounce!",
+  },
+  "wolf-outsmarted": {
+    caption: "Questions, a locked door, pump water, and noisy neighbors send the wolf running.",
+    mood: "cozy",
+    house: "kitchen",
+    details: ["pump", "bucket", "soup"],
     wolf: "gone",
-    sound: "Home!",
+    sound: "Smart!",
   },
   "straw-collapse": {
     caption: "Loose straw explodes into the air when the wolf finds the weak spot.",
@@ -1625,6 +1928,36 @@ function ComicPig({
 }
 
 function ComicWolf({ variant }: { variant: NonNullable<ComicScene["wolf"]> }) {
+  if (variant === "disguised") {
+    return (
+      <g transform="translate(526 232)">
+        <ellipse cx="44" cy="80" rx="40" ry="52" fill="#6d28d9" stroke="#292524" strokeWidth="5" />
+        <path
+          d="M10 58 C10 8 78 8 78 58 C66 44 22 44 10 58 Z"
+          fill="#7c3aed"
+          stroke="#292524"
+          strokeWidth="5"
+        />
+        <path d="M28 26 L16 -10 L44 14 Z" fill="#71717a" stroke="#292524" strokeWidth="4" />
+        <path d="M58 26 L76 -8 L78 28 Z" fill="#71717a" stroke="#292524" strokeWidth="4" />
+        <ellipse cx="42" cy="45" rx="25" ry="21" fill="#71717a" stroke="#292524" strokeWidth="4" />
+        <path
+          d="M20 56 C4 58 0 70 18 76 L42 76 C50 68 44 58 20 56 Z"
+          fill="#f8fafc"
+          stroke="#292524"
+          strokeWidth="4"
+        />
+        <circle cx="34" cy="40" r="4" fill="#fef08a" />
+        <circle cx="52" cy="40" r="4" fill="#fef08a" />
+        <circle cx="14" cy="66" r="4" fill="#292524" />
+        <path d="M74 76 C104 60 112 82 88 98" fill="none" stroke="#57534e" strokeLinecap="round" strokeWidth="9" />
+        <path d="M-18 100 H36 L28 134 H-10 Z" fill="#92400e" stroke="#292524" strokeWidth="5" />
+        <path d="M-12 102 C-4 80 22 80 30 102" fill="none" stroke="#292524" strokeWidth="4" />
+        <path d="M18 116 L2 124 M20 116 L36 124" stroke="#fef3c7" strokeLinecap="round" strokeWidth="5" />
+      </g>
+    );
+  }
+
   if (variant === "gone") {
     return (
       <g opacity="0.7">
