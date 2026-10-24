@@ -1335,7 +1335,11 @@ export default function HomePage() {
             </div>
 
             <div className="flex min-w-0 flex-1 flex-col gap-6 p-4 sm:gap-8 sm:p-8">
-              <ComicPanel scene={comicScenes[pageId]} />
+              <ComicPanel
+                pageId={pageId}
+                page={page}
+                scene={comicScenes[pageId]}
+              />
 
               <div className="space-y-5 text-base leading-7 text-stone-700 sm:text-lg sm:leading-8">
                 {page.paragraphs.map((paragraph) => (
@@ -1471,20 +1475,56 @@ const comicPalettes: Record<
   },
 };
 
-function ComicPanel({ scene }: { scene: ComicScene }) {
+function ComicPanel({
+  pageId,
+  page,
+  scene,
+}: {
+  pageId: PageId;
+  page: StoryPage;
+  scene: ComicScene;
+}) {
   const palette = comicPalettes[scene.mood];
+  const titleId = `comic-panel-title-${pageId}`;
 
   return (
     <figure className="overflow-hidden rounded-[1.75rem] border-4 border-stone-950 bg-white shadow-[8px_8px_0_rgba(28,25,23,0.18)]">
       <div className="relative bg-amber-100 p-2 sm:p-3">
         <svg
           role="img"
-          aria-labelledby="comic-panel-title"
-          viewBox="0 0 640 360"
+          aria-labelledby={titleId}
+          viewBox="0 0 640 390"
           className="h-auto w-full rounded-[1.25rem] border-2 border-stone-950 bg-white"
         >
-          <title id="comic-panel-title">{scene.caption}</title>
-          <rect width="640" height="360" fill={palette.sky} />
+          <title id={titleId}>{scene.caption}</title>
+          <defs>
+            <pattern
+              id={`comic-dots-${pageId}`}
+              width="12"
+              height="12"
+              patternUnits="userSpaceOnUse"
+            >
+              <circle cx="2" cy="2" r="1.6" fill="#292524" opacity="0.22" />
+            </pattern>
+            <linearGradient
+              id={`comic-shine-${pageId}`}
+              x1="0"
+              x2="1"
+              y1="0"
+              y2="1"
+            >
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.46" />
+              <stop offset="48%" stopColor="#ffffff" stopOpacity="0" />
+              <stop offset="100%" stopColor="#292524" stopOpacity="0.12" />
+            </linearGradient>
+          </defs>
+          <rect width="640" height="390" fill={palette.sky} />
+          <rect
+            width="640"
+            height="390"
+            fill={`url(#comic-dots-${pageId})`}
+            opacity="0.16"
+          />
           <circle cx="96" cy="70" r="34" fill={palette.glow} opacity="0.95" />
           {scene.mood === "night" ? (
             <>
@@ -1502,6 +1542,7 @@ function ComicPanel({ scene }: { scene: ComicScene }) {
           <BackgroundTrees mood={scene.mood} />
           {scene.details.includes("stream") ? <StreamDetail /> : null}
           <ComicHouseDrawing house={scene.house} details={scene.details} />
+          <SceneSpotlight scene={scene} />
           <ComicDetails details={scene.details} />
           <ComicPig x={132} y={286} color="#f9a8d4" />
           <ComicPig x={178} y={292} color="#fda4af" scale={0.9} />
@@ -1509,13 +1550,369 @@ function ComicPanel({ scene }: { scene: ComicScene }) {
           {scene.wolf ? <ComicWolf variant={scene.wolf} /> : null}
           {scene.sound ? <SoundBubble label={scene.sound} /> : null}
           {scene.details.includes("rain") ? <RainDrops /> : null}
+          <StoryRibbon title={page.title} />
+          <rect
+            width="640"
+            height="390"
+            fill={`url(#comic-shine-${pageId})`}
+            pointerEvents="none"
+          />
         </svg>
       </div>
       <figcaption className="border-t-4 border-stone-950 bg-white px-4 py-3 text-sm font-black text-stone-800 sm:text-base">
         Comic picture: {scene.caption}
       </figcaption>
+      <ChoicePreviewStrip choices={page.choices} ending={page.ending} />
     </figure>
   );
+}
+
+function StoryRibbon({ title }: { title: string }) {
+  const label = title.length > 42 ? `${title.slice(0, 39)}...` : title;
+
+  return (
+    <g>
+      <path
+        d="M250 18 H598 Q616 18 616 36 V72 Q616 90 598 90 H272 L250 110 V90 H240 Q222 90 222 72 V36 Q222 18 240 18 Z"
+        fill="#fff7ed"
+        stroke="#292524"
+        strokeWidth="5"
+      />
+      <text
+        x="420"
+        y="52"
+        textAnchor="middle"
+        className="fill-stone-950 text-[18px] font-black"
+      >
+        {label}
+      </text>
+      <text
+        x="420"
+        y="76"
+        textAnchor="middle"
+        className="fill-amber-800 text-[13px] font-black uppercase tracking-wider"
+      >
+        story scene
+      </text>
+    </g>
+  );
+}
+
+function SceneSpotlight({ scene }: { scene: ComicScene }) {
+  const hasWater =
+    scene.details.includes("barrel") ||
+    scene.details.includes("pump") ||
+    scene.details.includes("stream");
+  const hasKitchen =
+    scene.details.includes("fire") ||
+    scene.details.includes("soup") ||
+    scene.house === "kitchen" ||
+    scene.house === "smoky";
+  const hasBuild =
+    scene.details.includes("bricks") ||
+    scene.details.includes("mortar") ||
+    scene.house === "foundation" ||
+    scene.house === "brick-supplies";
+  const hasFragile =
+    scene.house === "straw" ||
+    scene.house === "muddy-straw" ||
+    scene.house === "stick" ||
+    scene.house === "broken-stick";
+
+  if (scene.wolf === "disguised") {
+    return <DisguiseSpotlight clue={scene.sound ?? "Clue!"} />;
+  }
+
+  if (scene.details.includes("leak") || scene.details.includes("ladder")) {
+    return <RoofSpotlight />;
+  }
+
+  if (hasWater) {
+    return <WaterSpotlight />;
+  }
+
+  if (hasKitchen) {
+    return <KitchenSpotlight smoky={scene.house === "smoky"} />;
+  }
+
+  if (hasBuild) {
+    return <BuildSpotlight />;
+  }
+
+  if (hasFragile || scene.wolf === "huff") {
+    return <FragileSpotlight danger={scene.wolf === "huff"} />;
+  }
+
+  return <FamilySpotlight />;
+}
+
+function SpotlightShell({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <g>
+      <rect
+        x="24"
+        y="146"
+        width="190"
+        height="138"
+        rx="18"
+        fill="#fef3c7"
+        stroke="#292524"
+        strokeWidth="5"
+      />
+      <rect x="36" y="158" width="166" height="82" rx="12" fill="#fff7ed" />
+      {children}
+      <rect x="36" y="246" width="166" height="28" rx="10" fill="#292524" />
+      <text
+        x="119"
+        y="266"
+        textAnchor="middle"
+        className="fill-amber-100 text-[14px] font-black uppercase"
+      >
+        {title}
+      </text>
+    </g>
+  );
+}
+
+function DisguiseSpotlight({ clue }: { clue: string }) {
+  return (
+    <SpotlightShell title="spot the trick">
+      <path d="M88 172 L68 228 H154 L134 172 Z" fill="#6d28d9" stroke="#292524" strokeWidth="4" />
+      <circle cx="111" cy="190" r="28" fill="#71717a" stroke="#292524" strokeWidth="4" />
+      <path d="M94 168 L84 140 L112 160 Z" fill="#71717a" stroke="#292524" strokeWidth="4" />
+      <path d="M126 166 L146 140 L142 174 Z" fill="#71717a" stroke="#292524" strokeWidth="4" />
+      <ellipse cx="106" cy="200" rx="23" ry="13" fill="#f8fafc" stroke="#292524" strokeWidth="4" />
+      <circle cx="101" cy="187" r="4" fill="#fef08a" />
+      <circle cx="120" cy="187" r="4" fill="#fef08a" />
+      <path d="M144 220 C164 208 176 226 154 238" fill="none" stroke="#57534e" strokeLinecap="round" strokeWidth="8" />
+      <text x="111" y="235" textAnchor="middle" className="fill-stone-950 text-[15px] font-black">
+        {clue}
+      </text>
+    </SpotlightShell>
+  );
+}
+
+function RoofSpotlight() {
+  return (
+    <SpotlightShell title="roof close-up">
+      <path d="M62 214 L116 166 L170 214 Z" fill="#991b1b" stroke="#292524" strokeWidth="4" />
+      <path d="M76 212 H158" stroke="#fecaca" strokeWidth="5" strokeLinecap="round" />
+      <path d="M92 190 H142" stroke="#fecaca" strokeWidth="5" strokeLinecap="round" />
+      <path d="M118 170 C126 188 134 202 118 214 C102 202 110 188 118 170 Z" fill="#2563eb" />
+      <g stroke="#78350f" strokeLinecap="round" strokeWidth="5">
+        <line x1="166" y1="232" x2="190" y2="174" />
+        <line x1="148" y1="232" x2="172" y2="174" />
+        <line x1="156" y1="212" x2="180" y2="212" />
+        <line x1="164" y1="192" x2="188" y2="192" />
+      </g>
+    </SpotlightShell>
+  );
+}
+
+function WaterSpotlight() {
+  return (
+    <SpotlightShell title="safe water">
+      <path d="M48 214 C88 196 120 236 190 206 L190 240 H48 Z" fill="#38bdf8" opacity="0.8" />
+      <rect x="68" y="178" width="48" height="58" rx="14" fill="#92400e" stroke="#292524" strokeWidth="4" />
+      <line x1="72" y1="198" x2="112" y2="198" stroke="#fde68a" strokeWidth="4" />
+      <g stroke="#292524" strokeLinecap="round" strokeWidth="4">
+        <rect x="138" y="172" width="20" height="64" rx="7" fill="#94a3b8" />
+        <path d="M148 172 C168 160 184 168 188 184" fill="none" />
+        <path d="M188 184 C194 194 186 204 176 202" fill="none" />
+      </g>
+      <path d="M184 204 C176 220 166 230 184 238 C202 230 192 220 184 204 Z" fill="#2563eb" />
+    </SpotlightShell>
+  );
+}
+
+function KitchenSpotlight({ smoky }: { smoky: boolean }) {
+  return (
+    <SpotlightShell title={smoky ? "too much fire" : "safe kitchen"}>
+      <rect x="60" y="220" width="118" height="14" rx="7" fill="#57534e" />
+      <path d="M116 222 C88 194 114 182 104 152 C138 174 150 196 132 222 Z" fill="#f97316" stroke="#292524" strokeWidth="4" />
+      <path d="M118 216 C104 202 120 192 120 176 C136 192 138 204 128 216 Z" fill="#fde047" />
+      <path d="M74 196 H122 L114 228 H82 Z" fill="#44403c" stroke="#292524" strokeWidth="4" />
+      <path d="M78 196 C88 184 108 184 118 196" fill="#fb923c" stroke="#292524" strokeWidth="3" />
+      {smoky ? (
+        <g fill="#57534e" opacity="0.72">
+          <ellipse cx="146" cy="158" rx="22" ry="12" />
+          <ellipse cx="164" cy="132" rx="28" ry="15" />
+        </g>
+      ) : (
+        <path d="M156 182 H188 L182 228 H162 Z" fill="#60a5fa" stroke="#292524" strokeWidth="4" />
+      )}
+    </SpotlightShell>
+  );
+}
+
+function BuildSpotlight() {
+  return (
+    <SpotlightShell title="build details">
+      <BrickStack x={60} y={174} />
+      <path d="M130 174 H174 L166 228 H138 Z" fill="#d6d3d1" stroke="#292524" strokeWidth="4" />
+      <line x1="142" y1="186" x2="174" y2="160" stroke="#78350f" strokeLinecap="round" strokeWidth="5" />
+      <rect x="66" y="232" width="112" height="10" rx="5" fill="#78716c" />
+      <path d="M58 154 H180" stroke="#292524" strokeLinecap="round" strokeWidth="5" />
+    </SpotlightShell>
+  );
+}
+
+function FragileSpotlight({ danger }: { danger: boolean }) {
+  return (
+    <SpotlightShell title={danger ? "wolf pressure" : "weak spots"}>
+      <g stroke="#78350f" strokeLinecap="round" strokeWidth="7">
+        <line x1="64" y1="226" x2="150" y2="166" />
+        <line x1="88" y1="232" x2="166" y2="180" />
+        <line x1="64" y1="184" x2="164" y2="224" />
+      </g>
+      {danger ? (
+        <g stroke="#e0f2fe" strokeLinecap="round" strokeWidth="7">
+          <path d="M180 172 C142 162 118 164 82 174" />
+          <path d="M184 200 C142 206 118 206 82 220" />
+        </g>
+      ) : (
+        <path d="M82 166 C108 140 136 140 162 166" fill="none" stroke="#ca8a04" strokeWidth="5" />
+      )}
+    </SpotlightShell>
+  );
+}
+
+function FamilySpotlight() {
+  return (
+    <SpotlightShell title="three pigs plan">
+      <ComicPig x={78} y={210} color="#f9a8d4" scale={0.82} />
+      <ComicPig x={118} y={214} color="#fda4af" scale={0.76} />
+      <ComicPig x={154} y={208} color="#fbcfe8" scale={0.9} />
+      <path d="M72 158 H168 Q184 158 184 174 V190 Q184 206 168 206 H72 Q56 206 56 190 V174 Q56 158 72 158 Z" fill="#ffffff" stroke="#292524" strokeWidth="4" />
+      <text x="120" y="188" textAnchor="middle" className="fill-stone-950 text-[15px] font-black">
+        PLAN
+      </text>
+    </SpotlightShell>
+  );
+}
+
+function ChoicePreviewStrip({
+  choices,
+  ending,
+}: {
+  choices?: Choice[];
+  ending?: StoryPage["ending"];
+}) {
+  if (!choices?.length) {
+    return (
+      <div className="border-t-4 border-stone-950 bg-stone-950 p-3 text-sm font-black text-white">
+        {ending === "safe"
+          ? "Comic ending: the pigs made the safe choice."
+          : "Comic ending: this choice became a lesson."}
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-2 border-t-4 border-stone-950 bg-[#fff7ed] p-3 sm:grid-cols-3">
+      {choices.slice(0, 3).map((choice, index) => {
+        const badge = getChoiceBadge(choice);
+
+        return (
+          <div
+            key={`${choice.next}-${choice.label}`}
+            className={`rounded-2xl border-2 border-stone-950 p-3 shadow-[4px_4px_0_rgba(28,25,23,0.16)] ${badge.className}`}
+          >
+            <div className="mb-2 flex items-center gap-2">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-stone-950 bg-white text-xs font-black text-stone-950">
+                {index + 1}
+              </span>
+              <span className="rounded-full border-2 border-stone-950 bg-white px-2 py-1 text-xs font-black uppercase text-stone-950">
+                {badge.label}
+              </span>
+            </div>
+            <p className="text-sm leading-5 font-black text-stone-950">
+              {choice.label}
+            </p>
+            <p className="mt-1 text-xs leading-4 font-semibold text-stone-700">
+              {choice.hint}
+            </p>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function getChoiceBadge(choice: Choice) {
+  const text = `${choice.label} ${choice.hint}`.toLowerCase();
+
+  if (
+    text.includes("ask") ||
+    text.includes("question") ||
+    text.includes("proof") ||
+    text.includes("clue")
+  ) {
+    return {
+      label: "ask",
+      className: "bg-sky-100",
+    };
+  }
+
+  if (
+    text.includes("open") ||
+    text.includes("ignore") ||
+    text.includes("rush") ||
+    text.includes("boast") ||
+    text.includes("too much")
+  ) {
+    return {
+      label: "risk",
+      className: "bg-red-100",
+    };
+  }
+
+  if (
+    text.includes("build") ||
+    text.includes("seal") ||
+    text.includes("secure") ||
+    text.includes("fit") ||
+    text.includes("repair")
+  ) {
+    return {
+      label: "fix",
+      className: "bg-emerald-100",
+    };
+  }
+
+  if (
+    text.includes("water") ||
+    text.includes("pump") ||
+    text.includes("barrel")
+  ) {
+    return {
+      label: "supply",
+      className: "bg-cyan-100",
+    };
+  }
+
+  if (
+    text.includes("fire") ||
+    text.includes("cook") ||
+    text.includes("kitchen") ||
+    text.includes("flame")
+  ) {
+    return {
+      label: "hearth",
+      className: "bg-orange-100",
+    };
+  }
+
+  return {
+    label: "choice",
+    className: "bg-amber-100",
+  };
 }
 
 function BackgroundTrees({ mood }: { mood: ComicMood }) {
