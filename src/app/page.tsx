@@ -60,6 +60,53 @@ type StoryPage = {
   ending?: "safe" | "danger";
 };
 
+type ComicMood = "sunny" | "market" | "forest" | "night" | "storm" | "cozy";
+
+type ComicHouse =
+  | "empty"
+  | "straw"
+  | "muddy-straw"
+  | "stick"
+  | "broken-stick"
+  | "brick-supplies"
+  | "foundation"
+  | "brick"
+  | "finished"
+  | "leaky"
+  | "kitchen"
+  | "smoky";
+
+type ComicDetail =
+  | "straw"
+  | "sticks"
+  | "bricks"
+  | "mud"
+  | "cart"
+  | "mortar"
+  | "braces"
+  | "chimney"
+  | "shutters"
+  | "secret-door"
+  | "rain"
+  | "leak"
+  | "ladder"
+  | "barrel"
+  | "pump"
+  | "stream"
+  | "fire"
+  | "bucket"
+  | "smoke"
+  | "soup";
+
+type ComicScene = {
+  caption: string;
+  mood: ComicMood;
+  house: ComicHouse;
+  details: ComicDetail[];
+  wolf?: "distant" | "near" | "huff" | "gone";
+  sound?: string;
+};
+
 const storyPages: Record<PageId, StoryPage> = {
   start: {
     chapter: "Page 1",
@@ -654,6 +701,225 @@ const endingStyles = {
   danger: "border-amber-200 bg-amber-50 text-amber-950",
 };
 
+const comicScenes: Record<PageId, ComicScene> = {
+  start: {
+    caption: "Three pigs choose straw, sticks, or bricks while the wolf hides far away.",
+    mood: "sunny",
+    house: "empty",
+    details: ["straw", "sticks", "bricks"],
+    wolf: "distant",
+    sound: "Pick!",
+  },
+  "meadow-straw": {
+    caption: "A quick straw hut rises in the meadow as the wolf sniffs closer.",
+    mood: "sunny",
+    house: "straw",
+    details: ["straw"],
+    wolf: "distant",
+    sound: "Rustle!",
+  },
+  "muddy-repair": {
+    caption: "The pigs smear mud into the straw gaps to slow down the wind.",
+    mood: "sunny",
+    house: "muddy-straw",
+    details: ["mud", "straw"],
+    wolf: "distant",
+    sound: "Splat!",
+  },
+  "market-trade": {
+    caption: "A cart carries traded bricks and mortar supplies away from the market road.",
+    mood: "market",
+    house: "brick-supplies",
+    details: ["cart", "bricks", "straw"],
+    wolf: "near",
+    sound: "Trade!",
+  },
+  "wolf-first-huff": {
+    caption: "The wolf huffs at the pretty straw door.",
+    mood: "storm",
+    house: "straw",
+    details: ["straw"],
+    wolf: "huff",
+    sound: "Huff!",
+  },
+  "forest-sticks": {
+    caption: "The pigs tie branches into a clever stick frame in the pine grove.",
+    mood: "forest",
+    house: "stick",
+    details: ["sticks"],
+    wolf: "near",
+    sound: "Tie!",
+  },
+  "cross-brace": {
+    caption: "Diagonal braces turn the stick walls into strong triangles.",
+    mood: "forest",
+    house: "stick",
+    details: ["sticks", "braces"],
+    wolf: "near",
+    sound: "Brace!",
+  },
+  "shortcut-frame": {
+    caption: "The shortcut frame twists apart when the wolf's wind hits it.",
+    mood: "storm",
+    house: "broken-stick",
+    details: ["sticks", "smoke"],
+    wolf: "huff",
+    sound: "Crash!",
+  },
+  brickyard: {
+    caption: "At the brickyard, every red brick feels like a promise.",
+    mood: "market",
+    house: "brick-supplies",
+    details: ["cart", "bricks"],
+    wolf: "distant",
+    sound: "Clack!",
+  },
+  "damp-bricks": {
+    caption: "Dry-stacked bricks wobble before the pigs fix their mistake.",
+    mood: "storm",
+    house: "brick-supplies",
+    details: ["bricks"],
+    wolf: "near",
+    sound: "Wobble!",
+  },
+  foundation: {
+    caption: "A level stone foundation gives the future brick house a strong start.",
+    mood: "sunny",
+    house: "foundation",
+    details: ["bricks", "mortar"],
+    wolf: "near",
+    sound: "Level!",
+  },
+  "mortar-mix": {
+    caption: "Smooth mortar binds the brick walls together.",
+    mood: "sunny",
+    house: "brick",
+    details: ["bricks", "mortar"],
+    wolf: "near",
+    sound: "Tap!",
+  },
+  "neighbor-help": {
+    caption: "All three pigs lift, measure, and finish the family house together.",
+    mood: "sunny",
+    house: "finished",
+    details: ["bricks", "shutters"],
+    wolf: "near",
+    sound: "Team!",
+  },
+  "chimney-watch": {
+    caption: "Bars, shutters, and a watched chimney block the wolf's favorite tricks.",
+    mood: "cozy",
+    house: "finished",
+    details: ["chimney", "shutters", "soup"],
+    wolf: "near",
+    sound: "Clang!",
+  },
+  "hidden-door": {
+    caption: "A secret pantry door gives the pigs a backup plan.",
+    mood: "cozy",
+    house: "finished",
+    details: ["secret-door", "shutters"],
+    wolf: "near",
+    sound: "Click!",
+  },
+  "night-watch": {
+    caption: "Under moonlight, the pigs wait inside while the wolf gathers one huge breath.",
+    mood: "night",
+    house: "finished",
+    details: ["chimney", "shutters", "fire"],
+    wolf: "huff",
+    sound: "Puff!",
+  },
+  "safe-home": {
+    caption: "The brick house survives, but rain clouds and chores gather after breakfast.",
+    mood: "storm",
+    house: "finished",
+    details: ["rain", "bucket", "smoke"],
+    wolf: "gone",
+    sound: "Safe!",
+  },
+  "storm-warning": {
+    caption: "Dark clouds warn the pigs to repair the roof before the downpour.",
+    mood: "storm",
+    house: "finished",
+    details: ["rain", "ladder", "leak"],
+    wolf: "distant",
+    sound: "Drip!",
+  },
+  "leaky-roof": {
+    caption: "Water sneaks through a lazy roof patch and drums into a bowl.",
+    mood: "storm",
+    house: "leaky",
+    details: ["rain", "leak", "bucket"],
+    wolf: "near",
+    sound: "Plink!",
+  },
+  "roof-secured": {
+    caption: "Fresh tiles and sealed seams send every raindrop into the gutter.",
+    mood: "storm",
+    house: "finished",
+    details: ["rain", "ladder", "bucket"],
+    wolf: "distant",
+    sound: "Fixed!",
+  },
+  "water-plan": {
+    caption: "Gutters, a covered barrel, and a pump keep water close to home.",
+    mood: "sunny",
+    house: "finished",
+    details: ["barrel", "pump", "stream"],
+    wolf: "near",
+    sound: "Plan!",
+  },
+  "water-trap": {
+    caption: "A trip to the far stream gives the wolf a chance to pounce.",
+    mood: "forest",
+    house: "finished",
+    details: ["stream", "bucket"],
+    wolf: "huff",
+    sound: "Run!",
+  },
+  "water-secured": {
+    caption: "Covered water storage and a yard pump keep the pigs safely supplied.",
+    mood: "sunny",
+    house: "finished",
+    details: ["barrel", "pump", "bucket"],
+    wolf: "near",
+    sound: "Splash!",
+  },
+  "kitchen-plan": {
+    caption: "A stone hearth, water bucket, and tidy wood box make a safe kitchen.",
+    mood: "cozy",
+    house: "kitchen",
+    details: ["fire", "bucket", "soup"],
+    wolf: "near",
+    sound: "Simmer!",
+  },
+  "kitchen-fire": {
+    caption: "Too many logs make smoke and sparks leap toward the cupboards.",
+    mood: "storm",
+    house: "smoky",
+    details: ["fire", "bucket", "smoke"],
+    wolf: "near",
+    sound: "Sizzle!",
+  },
+  "settled-home": {
+    caption: "The final home is dry, supplied with water, and safe for warm meals.",
+    mood: "cozy",
+    house: "kitchen",
+    details: ["rain", "barrel", "pump", "fire", "soup"],
+    wolf: "gone",
+    sound: "Home!",
+  },
+  "straw-collapse": {
+    caption: "Loose straw explodes into the air when the wolf finds the weak spot.",
+    mood: "storm",
+    house: "straw",
+    details: ["straw", "smoke"],
+    wolf: "huff",
+    sound: "Whoosh!",
+  },
+};
+
 export default function HomePage() {
   const [pageId, setPageId] = useState<PageId>("start");
   const [history, setHistory] = useState<PageId[]>([]);
@@ -766,6 +1032,8 @@ export default function HomePage() {
             </div>
 
             <div className="flex min-w-0 flex-1 flex-col gap-6 p-4 sm:gap-8 sm:p-8">
+              <ComicPanel scene={comicScenes[pageId]} />
+
               <div className="space-y-5 text-base leading-7 text-stone-700 sm:text-lg sm:leading-8">
                 {page.paragraphs.map((paragraph) => (
                   <p key={paragraph} className="break-words">
@@ -855,6 +1123,562 @@ export default function HomePage() {
         </div>
       </section>
     </main>
+  );
+}
+
+const comicPalettes: Record<
+  ComicMood,
+  { sky: string; ground: string; hill: string; glow: string }
+> = {
+  sunny: {
+    sky: "#bfdbfe",
+    ground: "#86efac",
+    hill: "#bbf7d0",
+    glow: "#facc15",
+  },
+  market: {
+    sky: "#fde68a",
+    ground: "#d9a35f",
+    hill: "#fcd34d",
+    glow: "#fb923c",
+  },
+  forest: {
+    sky: "#bbf7d0",
+    ground: "#65a30d",
+    hill: "#4ade80",
+    glow: "#84cc16",
+  },
+  night: {
+    sky: "#1e293b",
+    ground: "#365314",
+    hill: "#334155",
+    glow: "#fde68a",
+  },
+  storm: {
+    sky: "#94a3b8",
+    ground: "#65a30d",
+    hill: "#64748b",
+    glow: "#fef3c7",
+  },
+  cozy: {
+    sky: "#fed7aa",
+    ground: "#84cc16",
+    hill: "#fdba74",
+    glow: "#fb923c",
+  },
+};
+
+function ComicPanel({ scene }: { scene: ComicScene }) {
+  const palette = comicPalettes[scene.mood];
+
+  return (
+    <figure className="overflow-hidden rounded-[1.75rem] border-4 border-stone-950 bg-white shadow-[8px_8px_0_rgba(28,25,23,0.18)]">
+      <div className="relative bg-amber-100 p-2 sm:p-3">
+        <svg
+          role="img"
+          aria-labelledby="comic-panel-title"
+          viewBox="0 0 640 360"
+          className="h-auto w-full rounded-[1.25rem] border-2 border-stone-950 bg-white"
+        >
+          <title id="comic-panel-title">{scene.caption}</title>
+          <rect width="640" height="360" fill={palette.sky} />
+          <circle cx="96" cy="70" r="34" fill={palette.glow} opacity="0.95" />
+          {scene.mood === "night" ? (
+            <>
+              <circle cx="102" cy="68" r="30" fill="#fef9c3" />
+              <circle cx="116" cy="58" r="28" fill={palette.sky} />
+            </>
+          ) : null}
+          {scene.mood === "storm" ? <StormClouds /> : null}
+          <path
+            d="M0 245 C90 212 160 242 238 218 C335 188 414 225 512 202 C575 188 612 202 640 190 L640 360 L0 360 Z"
+            fill={palette.hill}
+            opacity="0.82"
+          />
+          <rect y="260" width="640" height="100" fill={palette.ground} />
+          <BackgroundTrees mood={scene.mood} />
+          {scene.details.includes("stream") ? <StreamDetail /> : null}
+          <ComicHouseDrawing house={scene.house} details={scene.details} />
+          <ComicDetails details={scene.details} />
+          <ComicPig x={132} y={286} color="#f9a8d4" />
+          <ComicPig x={178} y={292} color="#fda4af" scale={0.9} />
+          <ComicPig x={218} y={286} color="#fbcfe8" scale={1.08} />
+          {scene.wolf ? <ComicWolf variant={scene.wolf} /> : null}
+          {scene.sound ? <SoundBubble label={scene.sound} /> : null}
+          {scene.details.includes("rain") ? <RainDrops /> : null}
+        </svg>
+      </div>
+      <figcaption className="border-t-4 border-stone-950 bg-white px-4 py-3 text-sm font-black text-stone-800 sm:text-base">
+        Comic picture: {scene.caption}
+      </figcaption>
+    </figure>
+  );
+}
+
+function BackgroundTrees({ mood }: { mood: ComicMood }) {
+  const trunk = mood === "night" ? "#422006" : "#78350f";
+  const leaves = mood === "night" ? "#14532d" : "#166534";
+
+  return (
+    <g opacity="0.9">
+      {[510, 555, 600].map((x, index) => (
+        <g key={x} transform={`translate(${x} ${160 + index * 10})`}>
+          <rect x="14" y="46" width="16" height="76" rx="6" fill={trunk} />
+          <path d="M22 0 L62 74 H-18 Z" fill={leaves} />
+          <path d="M22 32 L54 92 H-10 Z" fill={leaves} opacity="0.9" />
+        </g>
+      ))}
+    </g>
+  );
+}
+
+function StormClouds() {
+  return (
+    <g fill="#475569" opacity="0.9">
+      <ellipse cx="390" cy="70" rx="58" ry="27" />
+      <ellipse cx="438" cy="74" rx="48" ry="25" />
+      <ellipse cx="345" cy="80" rx="42" ry="22" />
+      <ellipse cx="500" cy="106" rx="60" ry="26" />
+      <ellipse cx="548" cy="111" rx="42" ry="23" />
+    </g>
+  );
+}
+
+function RainDrops() {
+  return (
+    <g stroke="#dbeafe" strokeLinecap="round" strokeWidth="5" opacity="0.9">
+      {[340, 378, 416, 454, 492, 530, 568, 606].map((x, index) => (
+        <line
+          key={x}
+          x1={x}
+          x2={x - 14}
+          y1={118 + (index % 2) * 18}
+          y2={154 + (index % 2) * 18}
+        />
+      ))}
+    </g>
+  );
+}
+
+function ComicHouseDrawing({
+  house,
+  details,
+}: {
+  house: ComicHouse;
+  details: ComicDetail[];
+}) {
+  if (house === "empty") {
+    return (
+      <g>
+        <rect x="300" y="206" width="16" height="68" rx="4" fill="#92400e" />
+        <path d="M278 198 H374 L356 236 H260 Z" fill="#fde68a" stroke="#292524" strokeWidth="5" />
+        <text
+          x="317"
+          y="222"
+          textAnchor="middle"
+          className="fill-stone-950 text-[18px] font-black"
+        >
+          BUILD?
+        </text>
+      </g>
+    );
+  }
+
+  if (house === "broken-stick") {
+    return (
+      <g stroke="#292524" strokeLinecap="round" strokeWidth="9">
+        <line x1="286" y1="177" x2="392" y2="268" stroke="#92400e" />
+        <line x1="398" y1="177" x2="306" y2="268" stroke="#92400e" />
+        <line x1="294" y1="220" x2="408" y2="220" stroke="#92400e" />
+        <path d="M266 276 H426" stroke="#7c2d12" />
+      </g>
+    );
+  }
+
+  if (house === "straw" || house === "muddy-straw") {
+    return (
+      <g>
+        <path
+          d="M278 166 L352 102 L426 166 Z"
+          fill="#facc15"
+          stroke="#292524"
+          strokeWidth="5"
+        />
+        <rect
+          x="292"
+          y="166"
+          width="120"
+          height="100"
+          rx="12"
+          fill={house === "muddy-straw" ? "#d6a85f" : "#fef08a"}
+          stroke="#292524"
+          strokeWidth="5"
+        />
+        <path
+          d="M304 184 C326 170 340 200 362 184 C382 170 392 198 404 188"
+          fill="none"
+          stroke={house === "muddy-straw" ? "#854d0e" : "#ca8a04"}
+          strokeWidth="5"
+        />
+        <rect x="338" y="212" width="32" height="54" rx="8" fill="#92400e" stroke="#292524" strokeWidth="4" />
+      </g>
+    );
+  }
+
+  if (house === "stick") {
+    return (
+      <g stroke="#292524" strokeLinecap="round" strokeWidth="5">
+        <path d="M282 166 L352 102 L422 166 Z" fill="#a16207" />
+        <rect x="292" y="166" width="120" height="100" rx="8" fill="#b45309" />
+        {[306, 330, 354, 378, 402].map((x) => (
+          <line key={x} x1={x} y1="168" x2={x - 10} y2="264" stroke="#78350f" />
+        ))}
+        {details.includes("braces") ? (
+          <>
+            <line x1="298" y1="172" x2="406" y2="264" stroke="#fef3c7" strokeWidth="8" />
+            <line x1="406" y1="172" x2="298" y2="264" stroke="#fef3c7" strokeWidth="8" />
+          </>
+        ) : null}
+        <rect x="338" y="214" width="32" height="52" rx="6" fill="#78350f" />
+      </g>
+    );
+  }
+
+  if (house === "brick-supplies") {
+    return (
+      <g>
+        <BrickStack x={295} y={188} />
+        <BrickStack x={352} y={204} />
+        <rect x="300" y="254" width="130" height="12" rx="6" fill="#78350f" />
+      </g>
+    );
+  }
+
+  if (house === "foundation") {
+    return (
+      <g>
+        <rect x="268" y="244" width="176" height="24" rx="6" fill="#78716c" stroke="#292524" strokeWidth="5" />
+        <BrickStack x={304} y={204} />
+        <rect x="284" y="226" width="144" height="18" fill="#a8a29e" stroke="#292524" strokeWidth="4" />
+      </g>
+    );
+  }
+
+  const wallFill =
+    house === "leaky" ? "#f87171" : house === "smoky" ? "#fb923c" : "#ef4444";
+
+  return (
+    <g>
+      <rect x="310" y="114" width="26" height="52" fill="#a16207" stroke="#292524" strokeWidth="5" />
+      <path d="M264 166 L352 88 L440 166 Z" fill="#991b1b" stroke="#292524" strokeWidth="5" />
+      <rect x="286" y="166" width="132" height="102" rx="8" fill={wallFill} stroke="#292524" strokeWidth="5" />
+      {[184, 210, 236].map((y) => (
+        <line key={y} x1="290" y1={y} x2="414" y2={y} stroke="#fecaca" strokeWidth="3" />
+      ))}
+      {[312, 346, 380].map((x) => (
+        <line key={x} x1={x} y1="168" x2={x} y2="266" stroke="#fecaca" strokeWidth="3" />
+      ))}
+      {details.includes("shutters") ? (
+        <>
+          <rect x="300" y="190" width="32" height="28" rx="4" fill="#38bdf8" stroke="#292524" strokeWidth="4" />
+          <rect x="372" y="190" width="32" height="28" rx="4" fill="#38bdf8" stroke="#292524" strokeWidth="4" />
+        </>
+      ) : null}
+      {details.includes("chimney") ? (
+        <rect x="313" y="118" width="20" height="24" fill="#44403c" stroke="#292524" strokeWidth="3" />
+      ) : null}
+      {details.includes("secret-door") ? (
+        <rect x="294" y="220" width="34" height="48" rx="6" fill="#166534" stroke="#292524" strokeWidth="4" />
+      ) : null}
+      <rect x="340" y="214" width="34" height="54" rx="7" fill="#78350f" stroke="#292524" strokeWidth="4" />
+      {house === "leaky" ? (
+        <g stroke="#1d4ed8" strokeLinecap="round" strokeWidth="5">
+          <line x1="354" y1="144" x2="348" y2="180" />
+          <line x1="374" y1="150" x2="368" y2="190" />
+          <line x1="386" y1="160" x2="382" y2="202" />
+        </g>
+      ) : null}
+      {house === "smoky" ? (
+        <g fill="#44403c" opacity="0.75">
+          <ellipse cx="330" cy="94" rx="20" ry="12" />
+          <ellipse cx="354" cy="76" rx="24" ry="14" />
+          <ellipse cx="384" cy="58" rx="28" ry="15" />
+        </g>
+      ) : null}
+    </g>
+  );
+}
+
+function ComicDetails({ details }: { details: ComicDetail[] }) {
+  return (
+    <g>
+      {details.includes("cart") ? <CartDetail /> : null}
+      {details.includes("straw") ? <StrawDetail /> : null}
+      {details.includes("sticks") ? <SticksDetail /> : null}
+      {details.includes("bricks") ? <BrickStack x={72} y={226} /> : null}
+      {details.includes("mud") ? <MudDetail /> : null}
+      {details.includes("mortar") ? <MortarDetail /> : null}
+      {details.includes("ladder") ? <LadderDetail /> : null}
+      {details.includes("leak") ? <LeakDetail /> : null}
+      {details.includes("barrel") ? <BarrelDetail /> : null}
+      {details.includes("pump") ? <PumpDetail /> : null}
+      {details.includes("fire") ? <FireDetail large={details.includes("smoke")} /> : null}
+      {details.includes("bucket") ? <BucketDetail /> : null}
+      {details.includes("smoke") ? <SmokeDetail /> : null}
+      {details.includes("soup") ? <SoupDetail /> : null}
+    </g>
+  );
+}
+
+function BrickStack({ x, y }: { x: number; y: number }) {
+  return (
+    <g transform={`translate(${x} ${y})`} stroke="#292524" strokeWidth="3">
+      {[0, 1, 2].map((row) =>
+        [0, 1, 2].map((column) => (
+          <rect
+            key={`${row}-${column}`}
+            x={column * 28 + (row % 2) * 14}
+            y={row * 16}
+            width="28"
+            height="16"
+            fill="#dc2626"
+          />
+        )),
+      )}
+    </g>
+  );
+}
+
+function StrawDetail() {
+  return (
+    <g stroke="#854d0e" strokeLinecap="round" strokeWidth="4">
+      <path d="M78 286 C104 254 122 266 144 238" />
+      <path d="M92 292 C118 258 132 272 154 246" />
+      <path d="M62 294 C94 266 112 274 134 250" />
+    </g>
+  );
+}
+
+function SticksDetail() {
+  return (
+    <g stroke="#78350f" strokeLinecap="round" strokeWidth="7">
+      <line x1="70" y1="284" x2="152" y2="240" />
+      <line x1="92" y1="292" x2="164" y2="250" />
+      <line x1="58" y1="276" x2="142" y2="268" />
+    </g>
+  );
+}
+
+function CartDetail() {
+  return (
+    <g>
+      <rect x="70" y="238" width="100" height="42" rx="10" fill="#b45309" stroke="#292524" strokeWidth="5" />
+      <line x1="168" y1="244" x2="208" y2="226" stroke="#292524" strokeLinecap="round" strokeWidth="6" />
+      <circle cx="92" cy="286" r="15" fill="#44403c" />
+      <circle cx="148" cy="286" r="15" fill="#44403c" />
+    </g>
+  );
+}
+
+function MudDetail() {
+  return (
+    <g>
+      <ellipse cx="122" cy="302" rx="54" ry="15" fill="#854d0e" opacity="0.75" />
+      <circle cx="102" cy="292" r="7" fill="#a16207" />
+      <circle cx="142" cy="296" r="9" fill="#a16207" />
+    </g>
+  );
+}
+
+function MortarDetail() {
+  return (
+    <g>
+      <path d="M106 238 H152 L144 294 H114 Z" fill="#d6d3d1" stroke="#292524" strokeWidth="5" />
+      <line x1="118" y1="250" x2="154" y2="224" stroke="#78350f" strokeLinecap="round" strokeWidth="6" />
+    </g>
+  );
+}
+
+function LadderDetail() {
+  return (
+    <g stroke="#78350f" strokeLinecap="round" strokeWidth="6">
+      <line x1="440" y1="278" x2="492" y2="156" />
+      <line x1="464" y1="278" x2="516" y2="156" />
+      {[0, 1, 2, 3].map((step) => (
+        <line
+          key={step}
+          x1={452 + step * 13}
+          y1={250 - step * 30}
+          x2={476 + step * 13}
+          y2={250 - step * 30}
+        />
+      ))}
+    </g>
+  );
+}
+
+function LeakDetail() {
+  return (
+    <g fill="#2563eb">
+      <path d="M470 236 C480 254 490 266 470 278 C450 266 460 254 470 236 Z" />
+      <ellipse cx="470" cy="286" rx="28" ry="8" opacity="0.45" />
+    </g>
+  );
+}
+
+function StreamDetail() {
+  return (
+    <path
+      d="M460 310 C508 284 540 338 640 298 L640 360 L448 360 Z"
+      fill="#38bdf8"
+      opacity="0.78"
+    />
+  );
+}
+
+function BarrelDetail() {
+  return (
+    <g>
+      <rect x="464" y="228" width="56" height="68" rx="16" fill="#92400e" stroke="#292524" strokeWidth="5" />
+      <line x1="468" y1="250" x2="516" y2="250" stroke="#fde68a" strokeWidth="5" />
+      <line x1="468" y1="276" x2="516" y2="276" stroke="#fde68a" strokeWidth="5" />
+      <path d="M454 218 H530" stroke="#292524" strokeLinecap="round" strokeWidth="6" />
+    </g>
+  );
+}
+
+function PumpDetail() {
+  return (
+    <g stroke="#292524" strokeLinecap="round" strokeWidth="5">
+      <rect x="540" y="218" width="24" height="76" rx="8" fill="#94a3b8" />
+      <path d="M552 218 C574 204 594 212 602 230" fill="none" />
+      <line x1="552" y1="210" x2="586" y2="188" />
+      <path d="M602 230 C608 242 600 252 588 250" fill="none" />
+    </g>
+  );
+}
+
+function FireDetail({ large }: { large: boolean }) {
+  return (
+    <g transform={large ? "translate(418 254) scale(1.25)" : "translate(424 262)"}>
+      <rect x="-34" y="28" width="78" height="12" rx="6" fill="#57534e" />
+      <path d="M0 32 C-24 8 -2 -2 -8 -30 C20 -8 28 10 14 32 Z" fill="#f97316" stroke="#292524" strokeWidth="3" />
+      <path d="M4 28 C-8 14 6 6 6 -10 C20 6 20 18 12 28 Z" fill="#fde047" />
+    </g>
+  );
+}
+
+function BucketDetail() {
+  return (
+    <g>
+      <path d="M514 274 H558 L550 316 H522 Z" fill="#60a5fa" stroke="#292524" strokeWidth="5" />
+      <path d="M520 276 C526 252 546 252 552 276" fill="none" stroke="#292524" strokeWidth="4" />
+    </g>
+  );
+}
+
+function SmokeDetail() {
+  return (
+    <g fill="#57534e" opacity="0.75">
+      <ellipse cx="476" cy="180" rx="21" ry="13" />
+      <ellipse cx="504" cy="152" rx="27" ry="16" />
+      <ellipse cx="538" cy="122" rx="33" ry="18" />
+    </g>
+  );
+}
+
+function SoupDetail() {
+  return (
+    <g>
+      <path d="M452 250 H504 L496 284 H460 Z" fill="#44403c" stroke="#292524" strokeWidth="5" />
+      <path d="M456 250 C466 240 490 240 500 250" fill="#f97316" stroke="#292524" strokeWidth="4" />
+      <path d="M468 230 C460 218 480 214 472 202" fill="none" stroke="#fef3c7" strokeLinecap="round" strokeWidth="4" />
+      <path d="M488 230 C480 218 500 214 492 202" fill="none" stroke="#fef3c7" strokeLinecap="round" strokeWidth="4" />
+    </g>
+  );
+}
+
+function ComicPig({
+  x,
+  y,
+  color,
+  scale = 1,
+}: {
+  x: number;
+  y: number;
+  color: string;
+  scale?: number;
+}) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${scale})`}>
+      <ellipse cx="0" cy="18" rx="26" ry="20" fill={color} stroke="#292524" strokeWidth="4" />
+      <circle cx="4" cy="-4" r="22" fill={color} stroke="#292524" strokeWidth="4" />
+      <path d="M-12 -22 L-24 -40 L-4 -30 Z" fill={color} stroke="#292524" strokeWidth="4" />
+      <path d="M20 -18 L32 -34 L28 -10 Z" fill={color} stroke="#292524" strokeWidth="4" />
+      <ellipse cx="10" cy="4" rx="14" ry="9" fill="#fda4af" stroke="#292524" strokeWidth="3" />
+      <circle cx="5" cy="3" r="2" fill="#292524" />
+      <circle cx="15" cy="3" r="2" fill="#292524" />
+      <circle cx="-5" cy="-9" r="3" fill="#292524" />
+      <circle cx="14" cy="-11" r="3" fill="#292524" />
+    </g>
+  );
+}
+
+function ComicWolf({ variant }: { variant: NonNullable<ComicScene["wolf"]> }) {
+  if (variant === "gone") {
+    return (
+      <g opacity="0.7">
+        <path d="M560 300 C586 286 604 286 626 298" fill="none" stroke="#57534e" strokeLinecap="round" strokeWidth="7" />
+        <circle cx="542" cy="304" r="4" fill="#57534e" />
+        <circle cx="572" cy="316" r="4" fill="#57534e" />
+        <circle cx="604" cy="306" r="4" fill="#57534e" />
+      </g>
+    );
+  }
+
+  const scale = variant === "distant" ? 0.72 : variant === "huff" ? 1.12 : 0.9;
+  const x = variant === "distant" ? 545 : 530;
+  const y = variant === "distant" ? 235 : 248;
+
+  return (
+    <g transform={`translate(${x} ${y}) scale(${scale})`}>
+      {variant === "huff" ? (
+        <g stroke="#e0f2fe" strokeLinecap="round" strokeWidth="7" opacity="0.9">
+          <path d="M-26 6 C-70 -12 -92 -8 -126 0" />
+          <path d="M-24 22 C-68 28 -92 24 -122 42" />
+        </g>
+      ) : null}
+      <ellipse cx="38" cy="36" rx="42" ry="24" fill="#57534e" stroke="#292524" strokeWidth="4" />
+      <circle cx="4" cy="10" r="28" fill="#71717a" stroke="#292524" strokeWidth="4" />
+      <path d="M-10 -12 L-18 -42 L10 -24 Z" fill="#71717a" stroke="#292524" strokeWidth="4" />
+      <path d="M22 -8 L36 -34 L42 -2 Z" fill="#71717a" stroke="#292524" strokeWidth="4" />
+      <path d="M-26 16 C-44 18 -48 30 -30 34 L-4 34 C4 28 0 18 -26 16 Z" fill="#f8fafc" stroke="#292524" strokeWidth="4" />
+      <circle cx="-4" cy="4" r="4" fill="#fef08a" />
+      <circle cx="18" cy="4" r="4" fill="#fef08a" />
+      <circle cx="-34" cy="24" r="4" fill="#292524" />
+      <path d="M78 30 C104 12 114 30 92 48" fill="none" stroke="#57534e" strokeLinecap="round" strokeWidth="10" />
+    </g>
+  );
+}
+
+function SoundBubble({ label }: { label: string }) {
+  return (
+    <g>
+      <path
+        d="M42 36 H190 Q210 36 210 56 V100 Q210 120 190 120 H112 L86 148 L90 120 H42 Q22 120 22 100 V56 Q22 36 42 36 Z"
+        fill="#fef3c7"
+        stroke="#292524"
+        strokeWidth="5"
+      />
+      <text
+        x="116"
+        y="88"
+        textAnchor="middle"
+        className="fill-stone-950 text-[30px] font-black uppercase"
+      >
+        {label}
+      </text>
+    </g>
   );
 }
 
