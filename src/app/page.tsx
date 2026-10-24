@@ -1337,7 +1337,6 @@ export default function HomePage() {
             <div className="flex min-w-0 flex-1 flex-col gap-6 p-4 sm:gap-8 sm:p-8">
               <ComicPanel
                 pageId={pageId}
-                page={page}
                 scene={comicScenes[pageId]}
               />
 
@@ -1477,11 +1476,9 @@ const comicPalettes: Record<
 
 function ComicPanel({
   pageId,
-  page,
   scene,
 }: {
   pageId: PageId;
-  page: StoryPage;
   scene: ComicScene;
 }) {
   const palette = comicPalettes[scene.mood];
@@ -1562,7 +1559,6 @@ function ComicPanel({
       <figcaption className="border-t-4 border-stone-950 bg-white px-4 py-3 text-sm font-black text-stone-800 sm:text-base">
         Comic picture: {scene.caption}
       </figcaption>
-      <ChoicePreviewStrip choices={page.choices} ending={page.ending} />
     </figure>
   );
 }
@@ -1795,124 +1791,6 @@ function FamilySpotlight() {
       </text>
     </SpotlightShell>
   );
-}
-
-function ChoicePreviewStrip({
-  choices,
-  ending,
-}: {
-  choices?: Choice[];
-  ending?: StoryPage["ending"];
-}) {
-  if (!choices?.length) {
-    return (
-      <div className="border-t-4 border-stone-950 bg-stone-950 p-3 text-sm font-black text-white">
-        {ending === "safe"
-          ? "Comic ending: the pigs made the safe choice."
-          : "Comic ending: this choice became a lesson."}
-      </div>
-    );
-  }
-
-  return (
-    <div className="grid gap-2 border-t-4 border-stone-950 bg-[#fff7ed] p-3 sm:grid-cols-3">
-      {choices.slice(0, 3).map((choice, index) => {
-        const badge = getChoiceBadge(choice);
-
-        return (
-          <div
-            key={`${choice.next}-${choice.label}`}
-            className={`rounded-2xl border-2 border-stone-950 p-3 shadow-[4px_4px_0_rgba(28,25,23,0.16)] ${badge.className}`}
-          >
-            <div className="mb-2 flex items-center gap-2">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-stone-950 bg-white text-xs font-black text-stone-950">
-                {index + 1}
-              </span>
-              <span className="rounded-full border-2 border-stone-950 bg-white px-2 py-1 text-xs font-black uppercase text-stone-950">
-                {badge.label}
-              </span>
-            </div>
-            <p className="text-sm leading-5 font-black text-stone-950">
-              {choice.label}
-            </p>
-            <p className="mt-1 text-xs leading-4 font-semibold text-stone-700">
-              {choice.hint}
-            </p>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function getChoiceBadge(choice: Choice) {
-  const text = `${choice.label} ${choice.hint}`.toLowerCase();
-
-  if (
-    text.includes("ask") ||
-    text.includes("question") ||
-    text.includes("proof") ||
-    text.includes("clue")
-  ) {
-    return {
-      label: "ask",
-      className: "bg-sky-100",
-    };
-  }
-
-  if (
-    text.includes("open") ||
-    text.includes("ignore") ||
-    text.includes("rush") ||
-    text.includes("boast") ||
-    text.includes("too much")
-  ) {
-    return {
-      label: "risk",
-      className: "bg-red-100",
-    };
-  }
-
-  if (
-    text.includes("build") ||
-    text.includes("seal") ||
-    text.includes("secure") ||
-    text.includes("fit") ||
-    text.includes("repair")
-  ) {
-    return {
-      label: "fix",
-      className: "bg-emerald-100",
-    };
-  }
-
-  if (
-    text.includes("water") ||
-    text.includes("pump") ||
-    text.includes("barrel")
-  ) {
-    return {
-      label: "supply",
-      className: "bg-cyan-100",
-    };
-  }
-
-  if (
-    text.includes("fire") ||
-    text.includes("cook") ||
-    text.includes("kitchen") ||
-    text.includes("flame")
-  ) {
-    return {
-      label: "hearth",
-      className: "bg-orange-100",
-    };
-  }
-
-  return {
-    label: "choice",
-    className: "bg-amber-100",
-  };
 }
 
 function BackgroundTrees({ mood }: { mood: ComicMood }) {
