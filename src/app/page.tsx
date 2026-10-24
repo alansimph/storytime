@@ -1337,6 +1337,7 @@ export default function HomePage() {
             <div className="flex min-w-0 flex-1 flex-col gap-6 p-4 sm:gap-8 sm:p-8">
               <ComicPanel
                 pageId={pageId}
+                title={page.title}
                 scene={comicScenes[pageId]}
               />
 
@@ -1476,9 +1477,11 @@ const comicPalettes: Record<
 
 function ComicPanel({
   pageId,
+  title,
   scene,
 }: {
   pageId: PageId;
+  title: string;
   scene: ComicScene;
 }) {
   const palette = comicPalettes[scene.mood];
@@ -1547,7 +1550,7 @@ function ComicPanel({
           {scene.wolf ? <ComicWolf variant={scene.wolf} /> : null}
           {scene.sound ? <SoundBubble label={scene.sound} /> : null}
           {scene.details.includes("rain") ? <RainDrops /> : null}
-          <StoryRibbon title={page.title} />
+          <StoryRibbon title={title} />
           <rect
             width="640"
             height="390"
