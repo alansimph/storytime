@@ -32,6 +32,15 @@ type PageId =
   | "hidden-door"
   | "night-watch"
   | "safe-home"
+  | "storm-warning"
+  | "leaky-roof"
+  | "roof-secured"
+  | "water-plan"
+  | "water-trap"
+  | "water-secured"
+  | "kitchen-plan"
+  | "kitchen-fire"
+  | "settled-home"
   | "straw-collapse";
 
 type Choice = {
@@ -430,14 +439,199 @@ const storyPages: Record<PageId, StoryPage> = {
     ],
   },
   "safe-home": {
-    chapter: "Ending",
-    title: "Safe inside the house you built",
+    chapter: "Page 8",
+    title: "Safe from the wolf, not done with the woods",
     paragraphs: [
       "The wolf huffs. The wolf puffs. The door shudders, the shutters rattle, and the chimney coughs smoke back into the night. But the bricks hold.",
       "At dawn, the wolf limps away to bother easier stories. The three pigs share soup by the hearth, proud not because the house was fast, but because every choice made it safer.",
+      "Then thunder mutters over the hills, the empty water pail clanks by the door, and breakfast smoke curls too close to the rafters. Surviving one attack has taught the pigs a bigger lesson: a safe home must also handle tomorrow.",
     ],
-    house: "Complete, warm, wolf-proof home",
-    wolf: "Gone before breakfast",
+    house: "Wolf-proof brick home with new chores waiting",
+    wolf: "Retreating beyond the trees",
+    progress: 90,
+    choices: [
+      {
+        label: "Inspect the roof before the heavy rain arrives",
+        next: "storm-warning",
+        hint: "A strong wall still needs a dry ceiling.",
+      },
+      {
+        label: "Ignore the clouds and celebrate all morning",
+        next: "leaky-roof",
+        hint: "Rain finds every lazy seam.",
+      },
+    ],
+  },
+  "storm-warning": {
+    chapter: "Page 9",
+    title: "Clouds over the brick roof",
+    paragraphs: [
+      "By midday the sky turns the color of an old iron pot. The roof tiles click in the wind, and a cold drop lands right on the oldest pig's blueprint.",
+      "The youngest wants to throw straw over the hole. The middle pig suggests climbing up with a rope. The oldest pig points to the ladder hooks, spare tiles, and a bucket of pitch kept under the eaves.",
+    ],
+    house: "Brick home with a worried roofline",
+    wolf: "Somewhere in the wet woods",
+    progress: 91,
+    choices: [
+      {
+        label: "Hook the ladder, replace cracked tiles, and seal the seams",
+        next: "roof-secured",
+        hint: "Careful roof work keeps the storm outside.",
+      },
+      {
+        label: "Pile loose straw over the damp patch from inside",
+        next: "leaky-roof",
+        hint: "A quick cover can become a soggy problem.",
+      },
+      {
+        label: "Send one pig outside in the rain to hold a board over it",
+        next: "water-trap",
+        hint: "Leaving the safe house alone gives the wolf a chance.",
+      },
+    ],
+  },
+  "leaky-roof": {
+    chapter: "Ending",
+    title: "The drip that became a drumbeat",
+    paragraphs: [
+      "The first leak is only a plink in a mixing bowl. Then the ceiling darkens, the straw patch sags, and water runs down the pantry wall.",
+      "The pigs save the soup and stay out of the wolf's jaws, but the house is cold, damp, and miserable by nightfall. A brave home still needs maintenance before the weather turns.",
+    ],
+    house: "Safe walls under a leaking roof",
+    wolf: "Waiting for a mistake",
+    progress: 72,
+    ending: "danger",
+  },
+  "roof-secured": {
+    chapter: "Page 10",
+    title: "Dry rafters, steady hearts",
+    paragraphs: [
+      "The pigs work from the hooked ladder while one keeps watch at the shutter. Cracked tiles come off, fresh tiles overlap like scales, and pitch seals the seams before the rain breaks open.",
+      "When the storm finally drums on the roof, every drop rolls into the gutter instead of the beds. The youngest pig cheers until the water pail answers with a hollow clonk.",
+    ],
+    house: "Rain-tight brick home",
+    wolf: "Hidden by the storm",
+    progress: 94,
+    choices: [
+      {
+        label: "Build a water system so no one must visit the far stream",
+        next: "water-plan",
+        hint: "The wolf cannot ambush a pig who stays near home.",
+      },
+      {
+        label: "Wait until morning and fetch water from the stream",
+        next: "water-trap",
+        hint: "The old chore is the wolf's favorite opportunity.",
+      },
+    ],
+  },
+  "water-plan": {
+    chapter: "Page 11",
+    title: "Water without the dangerous walk",
+    paragraphs: [
+      "The stream is clear, but it bends through the dark pines where yellow eyes can hide. The pigs need washing water, soup water, and mortar water without wandering far from the door.",
+      "They sketch a system: gutters to catch rain, a covered barrel beside the kitchen wall, and a hand pump over the shallow well inside the fenced yard.",
+    ],
+    house: "Dry home ready for better water",
+    wolf: "Sniffing around the stream path",
+    progress: 95,
+    choices: [
+      {
+        label: "Fit gutters, cover the rain barrel, and prime the yard pump",
+        next: "water-secured",
+        hint: "Bring water close and keep it clean.",
+      },
+      {
+        label: "Carry buckets from the stream before sunrise",
+        next: "water-trap",
+        hint: "Fast feet are still outside the walls.",
+      },
+      {
+        label: "Leave an open barrel under the roof and hope it fills",
+        next: "water-trap",
+        hint: "Uncovered water attracts mud, bugs, and trouble.",
+      },
+    ],
+  },
+  "water-trap": {
+    chapter: "Ending",
+    title: "Too far from the door",
+    paragraphs: [
+      "The pail feels light on the way out and terribly heavy on the way back. Halfway from the stream, a wet branch snaps behind you.",
+      "The pigs sprint home and slam the bar just before the wolf reaches the step. They are safe for now, but the spilled bucket proves the lesson: a house is safer when daily needs do not pull anyone into danger.",
+    ],
+    house: "Strong house with unsafe chores",
+    wolf: "Prowling the water path",
+    progress: 78,
+    ending: "danger",
+  },
+  "water-secured": {
+    chapter: "Page 12",
+    title: "A barrel, a pump, and no lonely footsteps",
+    paragraphs: [
+      "Rainwater rattles through the gutters into a covered barrel, and the little hand pump squeaks up clear well water inside the fence. The pigs mark one bucket for drinking, one for washing, and one for emergencies.",
+      "Now no one has to cross the wolf's path for a drink. The middle pig looks at the emergency bucket, then at the hearth, and realizes the next danger could start inside the house.",
+    ],
+    house: "Rain-tight home with close, covered water",
+    wolf: "Frustrated near the stream",
+    progress: 97,
+    choices: [
+      {
+        label: "Set up a small kitchen that can cook safely with fire",
+        next: "kitchen-plan",
+        hint: "Warm meals need a hearth that respects sparks.",
+      },
+      {
+        label: "Cook over an open flame on the wooden table",
+        next: "kitchen-fire",
+        hint: "The wolf is not the only thing that can burn a home down.",
+      },
+    ],
+  },
+  "kitchen-plan": {
+    chapter: "Page 13",
+    title: "A little kitchen for careful fire",
+    paragraphs: [
+      "The pigs choose the corner nearest the chimney and clear it down to stone. They set flat bricks for a hearth, hang the soup pot from an iron hook, and stack firewood in a lidded box away from sparks.",
+      "A bucket of pump water waits beside the door, a small vent carries smoke upward, and a sand tray catches embers before they can roll under the cupboards.",
+    ],
+    house: "Brick home with a planned kitchen corner",
+    wolf: "Hungry, wet, and outside",
+    progress: 99,
+    choices: [
+      {
+        label: "Keep the flame low, cook supper, and bank the coals",
+        next: "settled-home",
+        hint: "A careful kitchen makes the house livable.",
+      },
+      {
+        label: "Pile on extra logs to make the soup boil faster",
+        next: "kitchen-fire",
+        hint: "Too much fire turns comfort into danger.",
+      },
+    ],
+  },
+  "kitchen-fire": {
+    chapter: "Ending",
+    title: "Smoke before supper",
+    paragraphs: [
+      "The flame leaps higher than the pot. Sparks spit toward the cupboard, smoke crawls under the rafters, and the pigs cough while scrambling for the water bucket.",
+      "They put the fire out before the house is lost, but supper is ruined and everyone is shaking. A safe kitchen needs stone, distance, water, and patience.",
+    ],
+    house: "Smoke-stained home with a hard lesson",
+    wolf: "Watching the chimney smoke",
+    progress: 82,
+    ending: "danger",
+  },
+  "settled-home": {
+    chapter: "Ending",
+    title: "A home ready for more than wolves",
+    paragraphs: [
+      "Rain falls all night, but the roof stays quiet. The barrel fills, the pump stands ready, and supper bubbles over a small steady flame in the brick hearth.",
+      "The wolf prowls once around the fence, hears three pigs laughing over warm bowls, and slinks away. The house is not just strong now. It is dry, supplied, careful with fire, and truly lived in.",
+    ],
+    house: "Dry, supplied, fire-safe family home",
+    wolf: "Gone to find an easier tale",
     progress: 100,
     ending: "safe",
   },
