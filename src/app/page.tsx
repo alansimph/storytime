@@ -50,6 +50,9 @@ type PageId =
   | "disguise-revealed"
   | "wolf-disguise-pounce"
   | "wolf-outsmarted"
+  | "fortified-home"
+  | "boar-reinforcements"
+  | "forest-flight"
   | "straw-collapse";
 
 type Choice = {
@@ -105,14 +108,15 @@ type ComicDetail =
   | "fire"
   | "bucket"
   | "smoke"
-  | "soup";
+  | "soup"
+  | "boars";
 
 type ComicScene = {
   caption: string;
   mood: ComicMood;
   house: ComicHouse;
   details: ComicDetail[];
-  wolf?: "distant" | "near" | "huff" | "disguised" | "gone";
+  wolf?: "distant" | "near" | "huff" | "disguised" | "pack" | "gone";
   sound?: string;
 };
 
@@ -902,16 +906,72 @@ const storyPages: Record<PageId, StoryPage> = {
     ending: "danger",
   },
   "wolf-outsmarted": {
-    chapter: "Ending",
+    chapter: "Page 21",
     title: "Questions beat the costume",
     paragraphs: [
       "The pigs bang the soup pot like a bell, spray a cold stream of pump water through the door slot, and shout the wolf's trick so every neighbor hears.",
       "Wet, exposed, and outnumbered, the wolf flees into the trees with his hood flapping behind him. The pigs lock up, laugh softly, and add one more rule to the house: a safe door can be kind, curious, and closed.",
+      "But near midnight, a chorus of howls answers from the pines. The disguised wolf returns with a pack at his heels, and this time the pigs must decide what kind of safety comes next.",
     ],
     house: "Dry, supplied, fire-safe, and trick-proof home",
-    wolf: "Running away in a soggy hood",
+    wolf: "Returning with a pack in the pines",
+    progress: 100,
+    choices: [
+      {
+        label: "Strengthen the house for a whole pack of wolves",
+        next: "fortified-home",
+        hint: "Make the safe place safer before the pack tests it.",
+      },
+      {
+        label: "Call the wild boar cousins for reinforcements",
+        next: "boar-reinforcements",
+        hint: "Family in the woods can be part of the defense.",
+      },
+      {
+        label: "Run away before the pack reaches the yard",
+        next: "forest-flight",
+        hint: "Leaving the strongest place may cost more than it saves.",
+      },
+    ],
+  },
+  "fortified-home": {
+    chapter: "Ending",
+    title: "A house ready for the pack",
+    paragraphs: [
+      "The pigs do not waste the warning. They drop a second bar across the door, wedge braces behind the shutters, scatter thorny rose canes below the windows, and station one pig by the pump, one by the hearth, and one at the peephole.",
+      "The pack rushes from every side, but every side has been planned. Paws meet thorns, noses meet locked shutters, and a cold pump spray greets the boldest wolf at the door slot.",
+      "By dawn the wolves are hoarse, wet, and tired of clever brickwork. They slink away together, and the pigs write a new rule above the hearth: when trouble grows, strengthen the plan before fear chooses for you.",
+    ],
+    house: "Fortified brick home with watched doors and windows",
+    wolf: "Pack retreating from a stronger home",
     progress: 100,
     ending: "safe",
+  },
+  "boar-reinforcements": {
+    chapter: "Ending",
+    title: "Tusks at the gate",
+    paragraphs: [
+      "The oldest pig blows the acorn horn kept beside the pantry latch. From the oak ridge come Aunt Bristle, Cousin Rooter, and six wild boar cousins with mud on their hooves and moonlight on their tusks.",
+      "The boars do not chase the wolves into the dark. They stand shoulder to shoulder outside the gate while the pigs keep the house barred and bright behind them.",
+      "The pack sees a strong house, a watchful family, and cousins who know every root and hollow in the woods. One by one, the wolves back away. By breakfast, the boars are mending the fence and accepting second bowls of soup.",
+    ],
+    house: "Brick home guarded by family reinforcements",
+    wolf: "Pack backing away from the gate",
+    progress: 100,
+    ending: "safe",
+  },
+  "forest-flight": {
+    chapter: "Ending",
+    title: "Too many feet in the dark",
+    paragraphs: [
+      "The pigs snatch blankets, slip through the secret door, and hurry for the creek path. For one breath it feels clever. Then the pack catches their scent in the wet grass.",
+      "Without walls, shutters, cousins, or a barred door, every rustle sounds like teeth. The pigs scramble into a thorn thicket and stay there shivering until sunrise.",
+      "They survive, but the strong house stands behind them with supper cooling on the hearth. Running bought a moment and spent every advantage they had built.",
+    ],
+    house: "Strong home left behind in the clearing",
+    wolf: "Pack prowling between the pigs and home",
+    progress: 70,
+    ending: "danger",
   },
   "straw-collapse": {
     chapter: "Ending",
@@ -1206,12 +1266,36 @@ const comicScenes: Record<PageId, ComicScene> = {
     sound: "Pounce!",
   },
   "wolf-outsmarted": {
-    caption: "Questions, a locked door, pump water, and noisy neighbors send the wolf running.",
-    mood: "cozy",
+    caption: "The soaked wolf returns to the pines with a pack of wolves behind him.",
+    mood: "night",
     house: "kitchen",
-    details: ["pump", "bucket", "soup"],
-    wolf: "gone",
-    sound: "Smart!",
+    details: ["pump", "bucket", "soup", "shutters"],
+    wolf: "pack",
+    sound: "Howl!",
+  },
+  "fortified-home": {
+    caption: "Extra bars, braced shutters, thorns, and teamwork hold off the whole pack.",
+    mood: "storm",
+    house: "finished",
+    details: ["bricks", "shutters", "chimney", "bucket"],
+    wolf: "pack",
+    sound: "Hold!",
+  },
+  "boar-reinforcements": {
+    caption: "Wild boar cousins stand at the gate while the pigs keep the house secure.",
+    mood: "night",
+    house: "finished",
+    details: ["boars", "shutters", "soup"],
+    wolf: "pack",
+    sound: "Boars!",
+  },
+  "forest-flight": {
+    caption: "Running into the woods leaves the strong house behind and the pack too close.",
+    mood: "forest",
+    house: "finished",
+    details: ["secret-door", "sticks"],
+    wolf: "pack",
+    sound: "Run!",
   },
   "straw-collapse": {
     caption: "Loose straw explodes into the air when the wolf finds the weak spot.",
@@ -1622,6 +1706,14 @@ function SceneSpotlight({ scene }: { scene: ComicScene }) {
     return <DisguiseSpotlight clue={scene.sound ?? "Clue!"} />;
   }
 
+  if (scene.details.includes("boars")) {
+    return <BoarSpotlight />;
+  }
+
+  if (scene.wolf === "pack") {
+    return <PackSpotlight />;
+  }
+
   if (scene.details.includes("leak") || scene.details.includes("ladder")) {
     return <RoofSpotlight />;
   }
@@ -1693,6 +1785,40 @@ function DisguiseSpotlight({ clue }: { clue: string }) {
       <text x="111" y="235" textAnchor="middle" className="fill-stone-950 text-[15px] font-black">
         {clue}
       </text>
+    </SpotlightShell>
+  );
+}
+
+function PackSpotlight() {
+  return (
+    <SpotlightShell title="pack alert">
+      <path d="M50 222 C78 188 96 188 124 222 C152 188 170 188 198 222 L198 246 H50 Z" fill="#57534e" stroke="#292524" strokeWidth="4" />
+      {[78, 124, 170].map((x) => (
+        <g key={x}>
+          <path d={`M${x - 18} 184 L${x - 28} 154 L${x - 2} 174 Z`} fill="#71717a" stroke="#292524" strokeWidth="4" />
+          <path d={`M${x + 10} 184 L${x + 30} 156 L${x + 30} 190 Z`} fill="#71717a" stroke="#292524" strokeWidth="4" />
+          <circle cx={x} cy="196" r="22" fill="#71717a" stroke="#292524" strokeWidth="4" />
+          <circle cx={x - 8} cy="192" r="3.5" fill="#fef08a" />
+          <circle cx={x + 8} cy="192" r="3.5" fill="#fef08a" />
+        </g>
+      ))}
+      <path d="M62 164 C96 134 148 134 184 164" fill="none" stroke="#fef3c7" strokeLinecap="round" strokeWidth="6" />
+    </SpotlightShell>
+  );
+}
+
+function BoarSpotlight() {
+  return (
+    <SpotlightShell title="cousins come">
+      <ellipse cx="116" cy="206" rx="64" ry="36" fill="#7c2d12" stroke="#292524" strokeWidth="4" />
+      <circle cx="72" cy="194" r="28" fill="#92400e" stroke="#292524" strokeWidth="4" />
+      <path d="M54 178 L42 154 L74 170 Z" fill="#92400e" stroke="#292524" strokeWidth="4" />
+      <path d="M88 176 L112 154 L108 188 Z" fill="#92400e" stroke="#292524" strokeWidth="4" />
+      <ellipse cx="56" cy="202" rx="22" ry="13" fill="#f97316" stroke="#292524" strokeWidth="4" />
+      <path d="M38 198 C24 190 22 216 42 208" fill="#fef3c7" stroke="#292524" strokeWidth="3" />
+      <path d="M70 198 C86 190 86 216 66 208" fill="#fef3c7" stroke="#292524" strokeWidth="3" />
+      <circle cx="66" cy="188" r="4" fill="#292524" />
+      <path d="M156 176 C182 152 196 182 172 196" fill="none" stroke="#7c2d12" strokeLinecap="round" strokeWidth="8" />
     </SpotlightShell>
   );
 }
@@ -2007,6 +2133,7 @@ function ComicDetails({ details }: { details: ComicDetail[] }) {
       {details.includes("bucket") ? <BucketDetail /> : null}
       {details.includes("smoke") ? <SmokeDetail /> : null}
       {details.includes("soup") ? <SoupDetail /> : null}
+      {details.includes("boars") ? <BoarCousinsDetail /> : null}
     </g>
   );
 }
@@ -2179,6 +2306,16 @@ function SoupDetail() {
   );
 }
 
+function BoarCousinsDetail() {
+  return (
+    <g>
+      <WildBoar x={74} y={286} scale={0.82} />
+      <WildBoar x={142} y={292} scale={0.72} />
+      <WildBoar x={202} y={286} scale={0.78} />
+    </g>
+  );
+}
+
 function ComicPig({
   x,
   y,
@@ -2201,6 +2338,30 @@ function ComicPig({
       <circle cx="15" cy="3" r="2" fill="#292524" />
       <circle cx="-5" cy="-9" r="3" fill="#292524" />
       <circle cx="14" cy="-11" r="3" fill="#292524" />
+    </g>
+  );
+}
+
+function WildBoar({
+  x,
+  y,
+  scale = 1,
+}: {
+  x: number;
+  y: number;
+  scale?: number;
+}) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${scale})`}>
+      <ellipse cx="20" cy="16" rx="38" ry="22" fill="#7c2d12" stroke="#292524" strokeWidth="4" />
+      <circle cx="-12" cy="4" r="23" fill="#92400e" stroke="#292524" strokeWidth="4" />
+      <path d="M-26 -12 L-36 -34 L-8 -20 Z" fill="#92400e" stroke="#292524" strokeWidth="4" />
+      <path d="M4 -14 L24 -34 L22 -4 Z" fill="#92400e" stroke="#292524" strokeWidth="4" />
+      <ellipse cx="-26" cy="12" rx="18" ry="11" fill="#f97316" stroke="#292524" strokeWidth="3" />
+      <circle cx="-20" cy="0" r="3" fill="#292524" />
+      <path d="M-42 8 C-56 0 -58 22 -40 18" fill="#fef3c7" stroke="#292524" strokeWidth="3" />
+      <path d="M-14 10 C0 2 2 24 -16 18" fill="#fef3c7" stroke="#292524" strokeWidth="3" />
+      <path d="M56 8 C78 -10 88 12 68 26" fill="none" stroke="#7c2d12" strokeLinecap="round" strokeWidth="8" />
     </g>
   );
 }
@@ -2232,6 +2393,30 @@ function ComicWolf({ variant }: { variant: NonNullable<ComicScene["wolf"]> }) {
         <path d="M-18 100 H36 L28 134 H-10 Z" fill="#92400e" stroke="#292524" strokeWidth="5" />
         <path d="M-12 102 C-4 80 22 80 30 102" fill="none" stroke="#292524" strokeWidth="4" />
         <path d="M18 116 L2 124 M20 116 L36 124" stroke="#fef3c7" strokeLinecap="round" strokeWidth="5" />
+      </g>
+    );
+  }
+
+  if (variant === "pack") {
+    return (
+      <g>
+        {[
+          { x: 500, y: 260, scale: 0.62 },
+          { x: 558, y: 248, scale: 0.74 },
+          { x: 596, y: 280, scale: 0.54 },
+        ].map((wolf) => (
+          <g key={`${wolf.x}-${wolf.y}`} transform={`translate(${wolf.x} ${wolf.y}) scale(${wolf.scale})`}>
+            <ellipse cx="38" cy="36" rx="42" ry="24" fill="#57534e" stroke="#292524" strokeWidth="4" />
+            <circle cx="4" cy="10" r="28" fill="#71717a" stroke="#292524" strokeWidth="4" />
+            <path d="M-10 -12 L-18 -42 L10 -24 Z" fill="#71717a" stroke="#292524" strokeWidth="4" />
+            <path d="M22 -8 L36 -34 L42 -2 Z" fill="#71717a" stroke="#292524" strokeWidth="4" />
+            <path d="M-26 16 C-44 18 -48 30 -30 34 L-4 34 C4 28 0 18 -26 16 Z" fill="#f8fafc" stroke="#292524" strokeWidth="4" />
+            <circle cx="-4" cy="4" r="4" fill="#fef08a" />
+            <circle cx="18" cy="4" r="4" fill="#fef08a" />
+            <circle cx="-34" cy="24" r="4" fill="#292524" />
+            <path d="M78 30 C104 12 114 30 92 48" fill="none" stroke="#57534e" strokeLinecap="round" strokeWidth="10" />
+          </g>
+        ))}
       </g>
     );
   }
