@@ -1087,6 +1087,21 @@ function rememberPageId(pageIds: PageId[], nextPageId: PageId): PageId[] {
   return pageIds.includes(nextPageId) ? pageIds : [...pageIds, nextPageId];
 }
 
+function pageNumberFor(pageId: PageId): number {
+  const match = /^Page (\d+)$/.exec(storyPages[pageId].chapter);
+  return match ? Number(match[1]) : -1;
+}
+
+function comparePageIdsByDescendingPageNumber(first: PageId, second: PageId) {
+  const pageNumberDifference = pageNumberFor(second) - pageNumberFor(first);
+
+  if (pageNumberDifference !== 0) {
+    return pageNumberDifference;
+  }
+
+  return storyPages[first].title.localeCompare(storyPages[second].title);
+}
+
 const comicScenes: Record<PageId, ComicScene> = {
   start: {
     caption: "Three pigs choose straw, sticks, or bricks while the wolf hides far away.",
@@ -1437,6 +1452,9 @@ export default function HomePage() {
   const page = storyPages[pageId];
   const pagesPanelId = "visited-pages-panel";
   const pagesSeen = completedPageIds.length;
+  const sortedCompletedPageIds = [...completedPageIds].sort(
+    comparePageIdsByDescendingPageNumber,
+  );
 
   function choose(next: PageId) {
     setShowVisitedPages(false);
@@ -1600,7 +1618,7 @@ export default function HomePage() {
               </p>
             </div>
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {completedPageIds.map((visitedPageId) => {
+              {sortedCompletedPageIds.map((visitedPageId) => {
                 const visitedPage = storyPages[visitedPageId];
                 const isCurrentPage = visitedPageId === pageId;
 
