@@ -55,6 +55,8 @@ type PageId =
   | "poison-apple-basket"
   | "apple-sleep"
   | "apple-thrown-away"
+  | "winter-stores"
+  | "winter-starvation"
   | "forest-flight"
   | "straw-collapse";
 
@@ -1014,17 +1016,55 @@ const storyPages: Record<PageId, StoryPage> = {
     ending: "danger",
   },
   "apple-thrown-away": {
-    chapter: "Ending",
+    chapter: "Page 24",
     title: "No bite for a bad trick",
     paragraphs: [
       "The pigs do not taste a single slice. They tie the basket shut, carry it with tongs to the far compost pit, and wash the doorstep until the powdery sparkle is gone.",
       "A crow pecks once, sneezes, and flaps away. From behind a blackberry bush comes a frustrated wolfish growl.",
-      "The pigs lock the gate, label the clue in their storybook, and keep breakfast to soup, bread, and apples from trees they know. The house is safe because the pigs remember: suspicion can be wisdom wearing work boots.",
+      "The pigs lock the gate, label the clue in their storybook, and keep breakfast to soup, bread, and apples from trees they know. At last the wolf pads away over the far hill, too hungry and too tired to try another trick.",
+      "With the wolf gone, the woods feel wide and quiet. The first cold wind rattles the roof tiles, and the pigs must decide what to do before winter arrives.",
     ],
     house: "Clean doorstep and a wiser breakfast table",
-    wolf: "Growling empty-bellied in the brambles",
+    wolf: "Gone beyond the far hill",
+    progress: 100,
+    choices: [
+      {
+        label: "Store food now so winter cannot catch them hungry",
+        next: "winter-stores",
+        hint: "A safe home also needs a stocked pantry.",
+      },
+      {
+        label: "Play and enjoy the sunshine all day",
+        next: "winter-starvation",
+        hint: "Fun is sweeter when tomorrow is fed too.",
+      },
+    ],
+  },
+  "winter-stores": {
+    chapter: "Ending",
+    title: "A pantry full of patient choices",
+    paragraphs: [
+      "The pigs gather acorns, dry apple rings, stack carrots in sand, and seal beans in clay jars. They mark one shelf for everyday meals and one shelf that nobody touches unless snow blocks the gate.",
+      "When winter finally wraps the clearing in white, the house is warm and the pantry smells of careful work. The pigs play cards by the hearth, eat soup thick with roots, and thank their autumn selves.",
+      "The wolf is gone, the larder is full, and the story ends with three pigs safe because they planned for a season they could not huff or puff away.",
+    ],
+    house: "Warm brick home with a winter pantry",
+    wolf: "Gone for good",
     progress: 100,
     ending: "safe",
+  },
+  "winter-starvation": {
+    chapter: "Ending",
+    title: "Sunshine spent too quickly",
+    paragraphs: [
+      "The pigs chase butterflies, nap in the meadow, and tell themselves there will be time to gather food tomorrow. Tomorrow says the same thing, and so does the day after that.",
+      "Then frost silver-coats the grass, the garden droops, and the empty pantry echoes when the youngest pig opens it. No wolf scratches at the door, but hunger does not need claws.",
+      "The pigs make it through on thin soup and hard lessons. Next year, they will remember that a peaceful day is the best time to prepare.",
+    ],
+    house: "Strong home with an empty winter pantry",
+    wolf: "Gone, but hunger has arrived",
+    progress: 74,
+    ending: "danger",
   },
   "forest-flight": {
     chapter: "Ending",
@@ -1092,7 +1132,14 @@ function pageNumberFor(pageId: PageId): number {
   return match ? Number(match[1]) : -1;
 }
 
-function comparePageIdsByDescendingPageNumber(first: PageId, second: PageId) {
+function comparePageIdsForCompletedList(first: PageId, second: PageId) {
+  const firstIsEnding = storyPages[first].chapter === "Ending";
+  const secondIsEnding = storyPages[second].chapter === "Ending";
+
+  if (firstIsEnding !== secondIsEnding) {
+    return firstIsEnding ? -1 : 1;
+  }
+
   const pageNumberDifference = pageNumberFor(second) - pageNumberFor(first);
 
   if (pageNumberDifference !== 0) {
@@ -1416,12 +1463,28 @@ const comicScenes: Record<PageId, ComicScene> = {
     sound: "Zzz...",
   },
   "apple-thrown-away": {
-    caption: "The suspicious apples go to the compost pit while the wolf growls in the brambles.",
+    caption: "The suspicious apples go to the compost pit, and the wolf finally leaves.",
     mood: "cozy",
     house: "kitchen",
     details: ["apples", "bucket", "soup"],
     wolf: "gone",
     sound: "Safe!",
+  },
+  "winter-stores": {
+    caption: "The pigs fill the pantry before winter snow reaches the clearing.",
+    mood: "cozy",
+    house: "kitchen",
+    details: ["apples", "barrel", "soup"],
+    wolf: "gone",
+    sound: "Ready!",
+  },
+  "winter-starvation": {
+    caption: "Playing through autumn leaves the pantry empty when winter arrives.",
+    mood: "storm",
+    house: "kitchen",
+    details: ["bucket", "smoke"],
+    wolf: "gone",
+    sound: "Hungry!",
   },
   "forest-flight": {
     caption: "Running into the woods leaves the strong house behind and the pack too close.",
@@ -1453,7 +1516,7 @@ export default function HomePage() {
   const pagesPanelId = "visited-pages-panel";
   const pagesSeen = completedPageIds.length;
   const sortedCompletedPageIds = [...completedPageIds].sort(
-    comparePageIdsByDescendingPageNumber,
+    comparePageIdsForCompletedList,
   );
 
   function choose(next: PageId) {
