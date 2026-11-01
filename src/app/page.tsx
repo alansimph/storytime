@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import {
   ArrowLeft,
@@ -1058,6 +1058,35 @@ const endingStyles = {
   danger: "border-amber-200 bg-amber-50 text-amber-950",
 };
 
+const storyProgressStorageKey = "storytime-three-little-pigs-progress-v1";
+const storyPageIdSet = new Set<PageId>(Object.keys(storyPages) as PageId[]);
+
+type StoredStoryProgress = {
+  pageId?: unknown;
+  history?: unknown;
+  completedPageIds?: unknown;
+};
+
+function isPageId(value: unknown): value is PageId {
+  return typeof value === "string" && storyPageIdSet.has(value as PageId);
+}
+
+function validPageIds(value: unknown): PageId[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter(isPageId);
+}
+
+function uniquePageIds(pageIds: PageId[]): PageId[] {
+  return Array.from(new Set(pageIds));
+}
+
+function rememberPageId(pageIds: PageId[], nextPageId: PageId): PageId[] {
+  return pageIds.includes(nextPageId) ? pageIds : [...pageIds, nextPageId];
+}
+
 const comicScenes: Record<PageId, ComicScene> = {
   start: {
     caption: "Three pigs choose straw, sticks, or bricks while the wolf hides far away.",
@@ -1400,42 +1429,40 @@ const comicScenes: Record<PageId, ComicScene> = {
 export default function HomePage() {
   const [pageId, setPageId] = useState<PageId>("start");
   const [history, setHistory] = useState<PageId[]>([]);
+  const [completedPageIds, setCompletedPageIds] = useState<PageId[]>(["start"]);
   const [showVisitedPages, setShowVisitedPages] = useState(false);
+  const [hasLoadedStoredProgress, setHasLoadedStoredProgress] = useState(false);
   const storyRef = useRef<HTMLElement>(null);
   const skipInitialScroll = useRef(true);
   const page = storyPages[pageId];
   const pagesPanelId = "visited-pages-panel";
-
-  const visitedPageIds = useMemo(
-    () => Array.from(new Set<PageId>([...history, pageId])),
-    [history, pageId],
-  );
-  const pagesSeen = visitedPageIds.length;
+  const pagesSeen = completedPageIds.length;
 
   function choose(next: PageId) {
     setShowVisitedPages(false);
     setHistory((current) => [...current, pageId]);
+    setCompletedPageIds((current) => rememberPageId(current, next));
     setPageId(next);
   }
 
   function goBack() {
     setShowVisitedPages(false);
-    setHistory((current) => {
-      const previous = current.at(-1);
+    const previous = history.at(-1);
 
-      if (!previous) {
-        return current;
-      }
+    if (!previous) {
+      return;
+    }
 
-      setPageId(previous);
-      return current.slice(0, -1);
-    });
+    setHistory((current) => current.slice(0, -1));
+    setCompletedPageIds((current) => rememberPageId(current, previous));
+    setPageId(previous);
   }
 
   function restart() {
     setShowVisitedPages(false);
     setPageId("start");
     setHistory([]);
+    setCompletedPageIds((current) => rememberPageId(current, "start"));
   }
 
   function jumpToVisitedPage(next: PageId) {
@@ -1446,8 +1473,68 @@ export default function HomePage() {
     }
 
     setHistory((current) => [...current, pageId]);
+    setCompletedPageIds((current) => rememberPageId(current, next));
     setPageId(next);
   }
+
+  useEffect(() => {
+    const loadStoredProgress = () => {
+      try {
+        const rawProgress = window.localStorage.getItem(
+          storyProgressStorageKey,
+        );
+
+        if (!rawProgress) {
+          return;
+        }
+
+        const storedProgress = JSON.parse(rawProgress) as StoredStoryProgress;
+        const storedPageId = isPageId(storedProgress.pageId)
+          ? storedProgress.pageId
+          : "start";
+        const storedHistory = validPageIds(storedProgress.history);
+        const storedCompletedPageIds = uniquePageIds([
+          "start",
+          ...storedHistory,
+          ...validPageIds(storedProgress.completedPageIds),
+          storedPageId,
+        ]);
+
+        setPageId(storedPageId);
+        setHistory(storedHistory);
+        setCompletedPageIds(storedCompletedPageIds);
+      } catch {
+        window.localStorage.removeItem(storyProgressStorageKey);
+      } finally {
+        setHasLoadedStoredProgress(true);
+      }
+    };
+
+    const timeoutId = window.setTimeout(loadStoredProgress, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
+  useEffect(() => {
+    if (!hasLoadedStoredProgress) {
+      return;
+    }
+
+    const progress = {
+      pageId,
+      history,
+      completedPageIds,
+    };
+
+    try {
+      window.localStorage.setItem(
+        storyProgressStorageKey,
+        JSON.stringify(progress),
+      );
+    } catch {
+      // If storage is unavailable, the story still works for the current session.
+    }
+  }, [completedPageIds, hasLoadedStoredProgress, history, pageId]);
 
   useEffect(() => {
     if (skipInitialScroll.current) {
@@ -1513,7 +1600,7 @@ export default function HomePage() {
               </p>
             </div>
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {visitedPageIds.map((visitedPageId) => {
+              {completedPageIds.map((visitedPageId) => {
                 const visitedPage = storyPages[visitedPageId];
                 const isCurrentPage = visitedPageId === pageId;
 
