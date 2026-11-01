@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import {
   ArrowLeft,
@@ -50,6 +50,14 @@ type PageId =
   | "disguise-revealed"
   | "wolf-disguise-pounce"
   | "wolf-outsmarted"
+  | "fortified-home"
+  | "boar-reinforcements"
+  | "poison-apple-basket"
+  | "apple-sleep"
+  | "apple-thrown-away"
+  | "winter-stores"
+  | "winter-starvation"
+  | "forest-flight"
   | "straw-collapse";
 
 type Choice = {
@@ -105,14 +113,16 @@ type ComicDetail =
   | "fire"
   | "bucket"
   | "smoke"
-  | "soup";
+  | "soup"
+  | "boars"
+  | "apples";
 
 type ComicScene = {
   caption: string;
   mood: ComicMood;
   house: ComicHouse;
   details: ComicDetail[];
-  wolf?: "distant" | "near" | "huff" | "disguised" | "gone";
+  wolf?: "distant" | "near" | "huff" | "disguised" | "pack" | "gone";
   sound?: string;
 };
 
@@ -902,16 +912,172 @@ const storyPages: Record<PageId, StoryPage> = {
     ending: "danger",
   },
   "wolf-outsmarted": {
-    chapter: "Ending",
+    chapter: "Page 21",
     title: "Questions beat the costume",
     paragraphs: [
       "The pigs bang the soup pot like a bell, spray a cold stream of pump water through the door slot, and shout the wolf's trick so every neighbor hears.",
       "Wet, exposed, and outnumbered, the wolf flees into the trees with his hood flapping behind him. The pigs lock up, laugh softly, and add one more rule to the house: a safe door can be kind, curious, and closed.",
+      "But near midnight, a chorus of howls answers from the pines. The disguised wolf returns with a pack at his heels, and this time the pigs must decide what kind of safety comes next.",
     ],
     house: "Dry, supplied, fire-safe, and trick-proof home",
-    wolf: "Running away in a soggy hood",
+    wolf: "Returning with a pack in the pines",
+    progress: 100,
+    choices: [
+      {
+        label: "Strengthen the house for a whole pack of wolves",
+        next: "fortified-home",
+        hint: "Make the safe place safer before the pack tests it.",
+      },
+      {
+        label: "Call the wild boar cousins for reinforcements",
+        next: "boar-reinforcements",
+        hint: "Family in the woods can be part of the defense.",
+      },
+      {
+        label: "Run away before the pack reaches the yard",
+        next: "forest-flight",
+        hint: "Leaving the strongest place may cost more than it saves.",
+      },
+    ],
+  },
+  "fortified-home": {
+    chapter: "Page 22",
+    title: "A house ready for the pack",
+    paragraphs: [
+      "The pigs do not waste the warning. They drop a second bar across the door, wedge braces behind the shutters, scatter thorny rose canes below the windows, and station one pig by the pump, one by the hearth, and one at the peephole.",
+      "The pack rushes from every side, but every side has been planned. Paws meet thorns, noses meet locked shutters, and a cold pump spray greets the boldest wolf at the door slot.",
+      "By dawn the wolves are hoarse, wet, and tired of clever brickwork. They slink away together, and the pigs write a new rule above the hearth: when trouble grows, strengthen the plan before fear chooses for you.",
+    ],
+    house: "Fortified brick home with watched doors and windows",
+    wolf: "Pack retreating from a stronger home",
+    progress: 100,
+    choices: [
+      {
+        label: "Sleep behind the bars and inspect the yard at sunrise",
+        next: "poison-apple-basket",
+        hint: "A quiet night can still leave clues in the morning.",
+      },
+    ],
+  },
+  "boar-reinforcements": {
+    chapter: "Page 22",
+    title: "Tusks at the gate",
+    paragraphs: [
+      "The oldest pig blows the acorn horn kept beside the pantry latch. From the oak ridge come Aunt Bristle, Cousin Rooter, and six wild boar cousins with mud on their hooves and moonlight on their tusks.",
+      "The boars do not chase the wolves into the dark. They stand shoulder to shoulder outside the gate while the pigs keep the house barred and bright behind them.",
+      "The pack sees a strong house, a watchful family, and cousins who know every root and hollow in the woods. One by one, the wolves back away. By breakfast, the boars are mending the fence and accepting second bowls of soup.",
+    ],
+    house: "Brick home guarded by family reinforcements",
+    wolf: "Pack backing away from the gate",
+    progress: 100,
+    choices: [
+      {
+        label: "Thank the cousins and check the doorstep in the morning",
+        next: "poison-apple-basket",
+        hint: "The wolf may return with a quieter trick.",
+      },
+    ],
+  },
+  "poison-apple-basket": {
+    chapter: "Page 23",
+    title: "A basket on the step",
+    paragraphs: [
+      "The wolf does not huff when he comes back that night. He creeps through the blue dark, sets a covered basket in front of the house, and pads away before the first rooster stirs.",
+      "Inside the basket, red apples shine as if they were polished with rubies. Hidden under the sweet skins is sleeping powder, fine as flour and bitter as old moonlight.",
+      "In the morning the pigs open the door and find the gift waiting. There is no note, only a few gray hairs caught on the handle and pawprints pressed into the dew.",
+    ],
+    house: "Barred brick home with a strange basket outside",
+    wolf: "Gone from sight, but still scheming",
+    progress: 100,
+    choices: [
+      {
+        label: "Eat the apples because breakfast smells wonderful",
+        next: "apple-sleep",
+        hint: "A pretty gift can hide a dangerous ingredient.",
+      },
+      {
+        label: "Throw the apples away because they are suspicious",
+        next: "apple-thrown-away",
+        hint: "Trust the clues before trusting the treat.",
+      },
+    ],
+  },
+  "apple-sleep": {
+    chapter: "Ending",
+    title: "The nap the wolf wanted",
+    paragraphs: [
+      "The first bite is crisp and sweet. The second bite makes the youngest pig yawn. Soon all three pigs are blinking slowly while the room tilts like a rocking chair.",
+      "They stumble to bar the door, but the sleeping powder is faster. The wolf sneaks back at noon and gets one paw through the opening before the pigs wake in a panic and slam the pantry latch.",
+      "They escape the trap, but only barely. From then on, every unexpected gift waits outside until someone can prove where it came from.",
+    ],
+    house: "Strong home made risky by a careless breakfast",
+    wolf: "Too close while the pigs sleep",
+    progress: 76,
+    ending: "danger",
+  },
+  "apple-thrown-away": {
+    chapter: "Page 24",
+    title: "No bite for a bad trick",
+    paragraphs: [
+      "The pigs do not taste a single slice. They tie the basket shut, carry it with tongs to the far compost pit, and wash the doorstep until the powdery sparkle is gone.",
+      "A crow pecks once, sneezes, and flaps away. From behind a blackberry bush comes a frustrated wolfish growl.",
+      "The pigs lock the gate, label the clue in their storybook, and keep breakfast to soup, bread, and apples from trees they know. At last the wolf pads away over the far hill, too hungry and too tired to try another trick.",
+      "With the wolf gone, the woods feel wide and quiet. The first cold wind rattles the roof tiles, and the pigs must decide what to do before winter arrives.",
+    ],
+    house: "Clean doorstep and a wiser breakfast table",
+    wolf: "Gone beyond the far hill",
+    progress: 100,
+    choices: [
+      {
+        label: "Store food now so winter cannot catch them hungry",
+        next: "winter-stores",
+        hint: "A safe home also needs a stocked pantry.",
+      },
+      {
+        label: "Play and enjoy the sunshine all day",
+        next: "winter-starvation",
+        hint: "Fun is sweeter when tomorrow is fed too.",
+      },
+    ],
+  },
+  "winter-stores": {
+    chapter: "Ending",
+    title: "A pantry full of patient choices",
+    paragraphs: [
+      "The pigs gather acorns, dry apple rings, stack carrots in sand, and seal beans in clay jars. They mark one shelf for everyday meals and one shelf that nobody touches unless snow blocks the gate.",
+      "When winter finally wraps the clearing in white, the house is warm and the pantry smells of careful work. The pigs play cards by the hearth, eat soup thick with roots, and thank their autumn selves.",
+      "The wolf is gone, the larder is full, and the story ends with three pigs safe because they planned for a season they could not huff or puff away.",
+    ],
+    house: "Warm brick home with a winter pantry",
+    wolf: "Gone for good",
     progress: 100,
     ending: "safe",
+  },
+  "winter-starvation": {
+    chapter: "Ending",
+    title: "Sunshine spent too quickly",
+    paragraphs: [
+      "The pigs chase butterflies, nap in the meadow, and tell themselves there will be time to gather food tomorrow. Tomorrow says the same thing, and so does the day after that.",
+      "Then frost silver-coats the grass, the garden droops, and the empty pantry echoes when the youngest pig opens it. No wolf scratches at the door, but hunger does not need claws.",
+      "The pigs make it through on thin soup and hard lessons. Next year, they will remember that a peaceful day is the best time to prepare.",
+    ],
+    house: "Strong home with an empty winter pantry",
+    wolf: "Gone, but hunger has arrived",
+    progress: 74,
+    ending: "danger",
+  },
+  "forest-flight": {
+    chapter: "Ending",
+    title: "Too many feet in the dark",
+    paragraphs: [
+      "The pigs snatch blankets, slip through the secret door, and hurry for the creek path. For one breath it feels clever. Then the pack catches their scent in the wet grass.",
+      "Without walls, shutters, cousins, or a barred door, every rustle sounds like teeth. The pigs scramble into a thorn thicket and stay there shivering until sunrise.",
+      "They survive, but the strong house stands behind them with supper cooling on the hearth. Running bought a moment and spent every advantage they had built.",
+    ],
+    house: "Strong home left behind in the clearing",
+    wolf: "Pack prowling between the pigs and home",
+    progress: 70,
+    ending: "danger",
   },
   "straw-collapse": {
     chapter: "Ending",
@@ -931,6 +1097,57 @@ const endingStyles = {
   safe: "border-emerald-200 bg-emerald-50 text-emerald-900",
   danger: "border-amber-200 bg-amber-50 text-amber-950",
 };
+
+const storyProgressStorageKey = "storytime-three-little-pigs-progress-v1";
+const storyPageIdSet = new Set<PageId>(Object.keys(storyPages) as PageId[]);
+
+type StoredStoryProgress = {
+  pageId?: unknown;
+  history?: unknown;
+  completedPageIds?: unknown;
+};
+
+function isPageId(value: unknown): value is PageId {
+  return typeof value === "string" && storyPageIdSet.has(value as PageId);
+}
+
+function validPageIds(value: unknown): PageId[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter(isPageId);
+}
+
+function uniquePageIds(pageIds: PageId[]): PageId[] {
+  return Array.from(new Set(pageIds));
+}
+
+function rememberPageId(pageIds: PageId[], nextPageId: PageId): PageId[] {
+  return pageIds.includes(nextPageId) ? pageIds : [...pageIds, nextPageId];
+}
+
+function pageNumberFor(pageId: PageId): number {
+  const match = /^Page (\d+)$/.exec(storyPages[pageId].chapter);
+  return match ? Number(match[1]) : -1;
+}
+
+function comparePageIdsForCompletedList(first: PageId, second: PageId) {
+  const firstIsEnding = storyPages[first].chapter === "Ending";
+  const secondIsEnding = storyPages[second].chapter === "Ending";
+
+  if (firstIsEnding !== secondIsEnding) {
+    return firstIsEnding ? -1 : 1;
+  }
+
+  const pageNumberDifference = pageNumberFor(second) - pageNumberFor(first);
+
+  if (pageNumberDifference !== 0) {
+    return pageNumberDifference;
+  }
+
+  return storyPages[first].title.localeCompare(storyPages[second].title);
+}
 
 const comicScenes: Record<PageId, ComicScene> = {
   start: {
@@ -1206,12 +1423,76 @@ const comicScenes: Record<PageId, ComicScene> = {
     sound: "Pounce!",
   },
   "wolf-outsmarted": {
-    caption: "Questions, a locked door, pump water, and noisy neighbors send the wolf running.",
+    caption: "The soaked wolf returns to the pines with a pack of wolves behind him.",
+    mood: "night",
+    house: "kitchen",
+    details: ["pump", "bucket", "soup", "shutters"],
+    wolf: "pack",
+    sound: "Howl!",
+  },
+  "fortified-home": {
+    caption: "Extra bars, braced shutters, thorns, and teamwork hold off the whole pack.",
+    mood: "storm",
+    house: "finished",
+    details: ["bricks", "shutters", "chimney", "bucket"],
+    wolf: "pack",
+    sound: "Hold!",
+  },
+  "boar-reinforcements": {
+    caption: "Wild boar cousins stand at the gate while the pigs keep the house secure.",
+    mood: "night",
+    house: "finished",
+    details: ["boars", "shutters", "soup"],
+    wolf: "pack",
+    sound: "Boars!",
+  },
+  "poison-apple-basket": {
+    caption: "Morning reveals a shiny apple basket left on the doorstep by the wolf.",
+    mood: "sunny",
+    house: "finished",
+    details: ["apples", "shutters"],
+    wolf: "gone",
+    sound: "Gift?",
+  },
+  "apple-sleep": {
+    caption: "The poisoned apples make the pigs sleepy before they can secure the door.",
+    mood: "storm",
+    house: "kitchen",
+    details: ["apples", "smoke"],
+    wolf: "near",
+    sound: "Zzz...",
+  },
+  "apple-thrown-away": {
+    caption: "The suspicious apples go to the compost pit, and the wolf finally leaves.",
     mood: "cozy",
     house: "kitchen",
-    details: ["pump", "bucket", "soup"],
+    details: ["apples", "bucket", "soup"],
     wolf: "gone",
-    sound: "Smart!",
+    sound: "Safe!",
+  },
+  "winter-stores": {
+    caption: "The pigs fill the pantry before winter snow reaches the clearing.",
+    mood: "cozy",
+    house: "kitchen",
+    details: ["apples", "barrel", "soup"],
+    wolf: "gone",
+    sound: "Ready!",
+  },
+  "winter-starvation": {
+    caption: "Playing through autumn leaves the pantry empty when winter arrives.",
+    mood: "storm",
+    house: "kitchen",
+    details: ["bucket", "smoke"],
+    wolf: "gone",
+    sound: "Hungry!",
+  },
+  "forest-flight": {
+    caption: "Running into the woods leaves the strong house behind and the pack too close.",
+    mood: "forest",
+    house: "finished",
+    details: ["secret-door", "sticks"],
+    wolf: "pack",
+    sound: "Run!",
   },
   "straw-collapse": {
     caption: "Loose straw explodes into the air when the wolf finds the weak spot.",
@@ -1226,37 +1507,115 @@ const comicScenes: Record<PageId, ComicScene> = {
 export default function HomePage() {
   const [pageId, setPageId] = useState<PageId>("start");
   const [history, setHistory] = useState<PageId[]>([]);
+  const [completedPageIds, setCompletedPageIds] = useState<PageId[]>(["start"]);
+  const [showVisitedPages, setShowVisitedPages] = useState(false);
+  const [hasLoadedStoredProgress, setHasLoadedStoredProgress] = useState(false);
   const storyRef = useRef<HTMLElement>(null);
   const skipInitialScroll = useRef(true);
   const page = storyPages[pageId];
-
-  const pagesSeen = useMemo(
-    () => new Set<PageId>([...history, pageId]).size,
-    [history, pageId],
+  const pagesPanelId = "visited-pages-panel";
+  const pagesSeen = completedPageIds.length;
+  const sortedCompletedPageIds = [...completedPageIds].sort(
+    comparePageIdsForCompletedList,
   );
 
   function choose(next: PageId) {
+    setShowVisitedPages(false);
     setHistory((current) => [...current, pageId]);
+    setCompletedPageIds((current) => rememberPageId(current, next));
     setPageId(next);
   }
 
   function goBack() {
-    setHistory((current) => {
-      const previous = current.at(-1);
+    setShowVisitedPages(false);
+    const previous = history.at(-1);
 
-      if (!previous) {
-        return current;
-      }
+    if (!previous) {
+      return;
+    }
 
-      setPageId(previous);
-      return current.slice(0, -1);
-    });
+    setHistory((current) => current.slice(0, -1));
+    setCompletedPageIds((current) => rememberPageId(current, previous));
+    setPageId(previous);
   }
 
   function restart() {
+    setShowVisitedPages(false);
     setPageId("start");
     setHistory([]);
+    setCompletedPageIds((current) => rememberPageId(current, "start"));
   }
+
+  function jumpToVisitedPage(next: PageId) {
+    setShowVisitedPages(false);
+
+    if (next === pageId) {
+      return;
+    }
+
+    setHistory((current) => [...current, pageId]);
+    setCompletedPageIds((current) => rememberPageId(current, next));
+    setPageId(next);
+  }
+
+  useEffect(() => {
+    const loadStoredProgress = () => {
+      try {
+        const rawProgress = window.localStorage.getItem(
+          storyProgressStorageKey,
+        );
+
+        if (!rawProgress) {
+          return;
+        }
+
+        const storedProgress = JSON.parse(rawProgress) as StoredStoryProgress;
+        const storedPageId = isPageId(storedProgress.pageId)
+          ? storedProgress.pageId
+          : "start";
+        const storedHistory = validPageIds(storedProgress.history);
+        const storedCompletedPageIds = uniquePageIds([
+          "start",
+          ...storedHistory,
+          ...validPageIds(storedProgress.completedPageIds),
+          storedPageId,
+        ]);
+
+        setPageId(storedPageId);
+        setHistory(storedHistory);
+        setCompletedPageIds(storedCompletedPageIds);
+      } catch {
+        window.localStorage.removeItem(storyProgressStorageKey);
+      } finally {
+        setHasLoadedStoredProgress(true);
+      }
+    };
+
+    const timeoutId = window.setTimeout(loadStoredProgress, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
+  useEffect(() => {
+    if (!hasLoadedStoredProgress) {
+      return;
+    }
+
+    const progress = {
+      pageId,
+      history,
+      completedPageIds,
+    };
+
+    try {
+      window.localStorage.setItem(
+        storyProgressStorageKey,
+        JSON.stringify(progress),
+      );
+    } catch {
+      // If storage is unavailable, the story still works for the current session.
+    }
+  }, [completedPageIds, hasLoadedStoredProgress, history, pageId]);
 
   useEffect(() => {
     if (skipInitialScroll.current) {
@@ -1301,9 +1660,51 @@ export default function HomePage() {
               label="Pages"
               value={`${pagesSeen}`}
               className="col-span-2 sm:col-span-1"
+              onClick={() => setShowVisitedPages((isOpen) => !isOpen)}
+              active={showVisitedPages}
+              controlsId={pagesPanelId}
             />
           </div>
         </header>
+
+        {showVisitedPages ? (
+          <section
+            id={pagesPanelId}
+            className="mb-4 rounded-[1.75rem] border border-amber-200 bg-white/85 p-4 shadow-sm backdrop-blur sm:mb-5 sm:p-5"
+          >
+            <div className="mb-4 min-w-0">
+              <h2 className="text-lg font-black text-stone-950">
+                Completed pages
+              </h2>
+              <p className="mt-1 text-sm leading-6 text-stone-700">
+                Jump back to any story page you have already reached.
+              </p>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {sortedCompletedPageIds.map((visitedPageId) => {
+                const visitedPage = storyPages[visitedPageId];
+                const isCurrentPage = visitedPageId === pageId;
+
+                return (
+                  <button
+                    key={visitedPageId}
+                    type="button"
+                    disabled={isCurrentPage}
+                    className="min-w-0 rounded-2xl border border-stone-200 bg-stone-50 p-3 text-left transition hover:border-amber-300 hover:bg-amber-50 focus-visible:ring-3 focus-visible:ring-amber-400/50 focus-visible:outline-none disabled:cursor-default disabled:border-amber-300 disabled:bg-amber-100"
+                    onClick={() => jumpToVisitedPage(visitedPageId)}
+                  >
+                    <span className="block text-xs font-black tracking-[0.14em] text-amber-800 uppercase">
+                      {isCurrentPage ? "Current page" : visitedPage.chapter}
+                    </span>
+                    <span className="mt-1 block text-sm leading-5 font-black break-words text-stone-950">
+                      {visitedPage.title}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        ) : null}
 
         <div className="grid min-w-0 flex-1 gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <article
@@ -1622,6 +2023,18 @@ function SceneSpotlight({ scene }: { scene: ComicScene }) {
     return <DisguiseSpotlight clue={scene.sound ?? "Clue!"} />;
   }
 
+  if (scene.details.includes("boars")) {
+    return <BoarSpotlight />;
+  }
+
+  if (scene.details.includes("apples")) {
+    return <AppleSpotlight />;
+  }
+
+  if (scene.wolf === "pack") {
+    return <PackSpotlight />;
+  }
+
   if (scene.details.includes("leak") || scene.details.includes("ladder")) {
     return <RoofSpotlight />;
   }
@@ -1692,6 +2105,63 @@ function DisguiseSpotlight({ clue }: { clue: string }) {
       <path d="M144 220 C164 208 176 226 154 238" fill="none" stroke="#57534e" strokeLinecap="round" strokeWidth="8" />
       <text x="111" y="235" textAnchor="middle" className="fill-stone-950 text-[15px] font-black">
         {clue}
+      </text>
+    </SpotlightShell>
+  );
+}
+
+function PackSpotlight() {
+  return (
+    <SpotlightShell title="pack alert">
+      <path d="M50 222 C78 188 96 188 124 222 C152 188 170 188 198 222 L198 246 H50 Z" fill="#57534e" stroke="#292524" strokeWidth="4" />
+      {[78, 124, 170].map((x) => (
+        <g key={x}>
+          <path d={`M${x - 18} 184 L${x - 28} 154 L${x - 2} 174 Z`} fill="#71717a" stroke="#292524" strokeWidth="4" />
+          <path d={`M${x + 10} 184 L${x + 30} 156 L${x + 30} 190 Z`} fill="#71717a" stroke="#292524" strokeWidth="4" />
+          <circle cx={x} cy="196" r="22" fill="#71717a" stroke="#292524" strokeWidth="4" />
+          <circle cx={x - 8} cy="192" r="3.5" fill="#fef08a" />
+          <circle cx={x + 8} cy="192" r="3.5" fill="#fef08a" />
+        </g>
+      ))}
+      <path d="M62 164 C96 134 148 134 184 164" fill="none" stroke="#fef3c7" strokeLinecap="round" strokeWidth="6" />
+    </SpotlightShell>
+  );
+}
+
+function BoarSpotlight() {
+  return (
+    <SpotlightShell title="cousins come">
+      <ellipse cx="116" cy="206" rx="64" ry="36" fill="#7c2d12" stroke="#292524" strokeWidth="4" />
+      <circle cx="72" cy="194" r="28" fill="#92400e" stroke="#292524" strokeWidth="4" />
+      <path d="M54 178 L42 154 L74 170 Z" fill="#92400e" stroke="#292524" strokeWidth="4" />
+      <path d="M88 176 L112 154 L108 188 Z" fill="#92400e" stroke="#292524" strokeWidth="4" />
+      <ellipse cx="56" cy="202" rx="22" ry="13" fill="#f97316" stroke="#292524" strokeWidth="4" />
+      <path d="M38 198 C24 190 22 216 42 208" fill="#fef3c7" stroke="#292524" strokeWidth="3" />
+      <path d="M70 198 C86 190 86 216 66 208" fill="#fef3c7" stroke="#292524" strokeWidth="3" />
+      <circle cx="66" cy="188" r="4" fill="#292524" />
+      <path d="M156 176 C182 152 196 182 172 196" fill="none" stroke="#7c2d12" strokeLinecap="round" strokeWidth="8" />
+    </SpotlightShell>
+  );
+}
+
+function AppleSpotlight() {
+  return (
+    <SpotlightShell title="check gifts">
+      <path d="M62 212 H174 L160 254 H76 Z" fill="#92400e" stroke="#292524" strokeWidth="4" />
+      <path d="M74 212 C82 176 154 176 162 212" fill="none" stroke="#292524" strokeWidth="5" />
+      {[92, 118, 144].map((x) => (
+        <g key={x}>
+          <circle cx={x} cy="194" r="19" fill="#dc2626" stroke="#292524" strokeWidth="4" />
+          <path d={`M${x} 176 C${x + 4} 164 ${x + 16} 164 ${x + 18} 172`} fill="none" stroke="#166534" strokeLinecap="round" strokeWidth="5" />
+        </g>
+      ))}
+      <g fill="#fef3c7" opacity="0.9">
+        <circle cx="86" cy="168" r="4" />
+        <circle cx="132" cy="160" r="3" />
+        <circle cx="164" cy="184" r="4" />
+      </g>
+      <text x="118" y="244" textAnchor="middle" className="fill-amber-100 text-[15px] font-black">
+        powder?
       </text>
     </SpotlightShell>
   );
@@ -2007,6 +2477,8 @@ function ComicDetails({ details }: { details: ComicDetail[] }) {
       {details.includes("bucket") ? <BucketDetail /> : null}
       {details.includes("smoke") ? <SmokeDetail /> : null}
       {details.includes("soup") ? <SoupDetail /> : null}
+      {details.includes("boars") ? <BoarCousinsDetail /> : null}
+      {details.includes("apples") ? <AppleBasketDetail /> : null}
     </g>
   );
 }
@@ -2179,6 +2651,36 @@ function SoupDetail() {
   );
 }
 
+function BoarCousinsDetail() {
+  return (
+    <g>
+      <WildBoar x={74} y={286} scale={0.82} />
+      <WildBoar x={142} y={292} scale={0.72} />
+      <WildBoar x={202} y={286} scale={0.78} />
+    </g>
+  );
+}
+
+function AppleBasketDetail() {
+  return (
+    <g>
+      <path d="M444 232 H536 L522 286 H458 Z" fill="#92400e" stroke="#292524" strokeWidth="5" />
+      <path d="M458 232 C466 194 514 194 522 232" fill="none" stroke="#292524" strokeWidth="5" />
+      {[464, 484, 504, 524].map((x, index) => (
+        <g key={x}>
+          <circle cx={x} cy={224 - (index % 2) * 12} r="15" fill="#dc2626" stroke="#292524" strokeWidth="3" />
+          <path d={`M${x + 2} ${205 - (index % 2) * 12} C${x + 8} ${198 - (index % 2) * 12} ${x + 18} ${200 - (index % 2) * 12} ${x + 18} ${208 - (index % 2) * 12}`} fill="none" stroke="#166534" strokeLinecap="round" strokeWidth="4" />
+        </g>
+      ))}
+      <g fill="#fef3c7" opacity="0.9">
+        <circle cx="452" cy="204" r="4" />
+        <circle cx="496" cy="194" r="3" />
+        <circle cx="536" cy="220" r="4" />
+      </g>
+    </g>
+  );
+}
+
 function ComicPig({
   x,
   y,
@@ -2201,6 +2703,30 @@ function ComicPig({
       <circle cx="15" cy="3" r="2" fill="#292524" />
       <circle cx="-5" cy="-9" r="3" fill="#292524" />
       <circle cx="14" cy="-11" r="3" fill="#292524" />
+    </g>
+  );
+}
+
+function WildBoar({
+  x,
+  y,
+  scale = 1,
+}: {
+  x: number;
+  y: number;
+  scale?: number;
+}) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${scale})`}>
+      <ellipse cx="20" cy="16" rx="38" ry="22" fill="#7c2d12" stroke="#292524" strokeWidth="4" />
+      <circle cx="-12" cy="4" r="23" fill="#92400e" stroke="#292524" strokeWidth="4" />
+      <path d="M-26 -12 L-36 -34 L-8 -20 Z" fill="#92400e" stroke="#292524" strokeWidth="4" />
+      <path d="M4 -14 L24 -34 L22 -4 Z" fill="#92400e" stroke="#292524" strokeWidth="4" />
+      <ellipse cx="-26" cy="12" rx="18" ry="11" fill="#f97316" stroke="#292524" strokeWidth="3" />
+      <circle cx="-20" cy="0" r="3" fill="#292524" />
+      <path d="M-42 8 C-56 0 -58 22 -40 18" fill="#fef3c7" stroke="#292524" strokeWidth="3" />
+      <path d="M-14 10 C0 2 2 24 -16 18" fill="#fef3c7" stroke="#292524" strokeWidth="3" />
+      <path d="M56 8 C78 -10 88 12 68 26" fill="none" stroke="#7c2d12" strokeLinecap="round" strokeWidth="8" />
     </g>
   );
 }
@@ -2232,6 +2758,30 @@ function ComicWolf({ variant }: { variant: NonNullable<ComicScene["wolf"]> }) {
         <path d="M-18 100 H36 L28 134 H-10 Z" fill="#92400e" stroke="#292524" strokeWidth="5" />
         <path d="M-12 102 C-4 80 22 80 30 102" fill="none" stroke="#292524" strokeWidth="4" />
         <path d="M18 116 L2 124 M20 116 L36 124" stroke="#fef3c7" strokeLinecap="round" strokeWidth="5" />
+      </g>
+    );
+  }
+
+  if (variant === "pack") {
+    return (
+      <g>
+        {[
+          { x: 500, y: 260, scale: 0.62 },
+          { x: 558, y: 248, scale: 0.74 },
+          { x: 596, y: 280, scale: 0.54 },
+        ].map((wolf) => (
+          <g key={`${wolf.x}-${wolf.y}`} transform={`translate(${wolf.x} ${wolf.y}) scale(${wolf.scale})`}>
+            <ellipse cx="38" cy="36" rx="42" ry="24" fill="#57534e" stroke="#292524" strokeWidth="4" />
+            <circle cx="4" cy="10" r="28" fill="#71717a" stroke="#292524" strokeWidth="4" />
+            <path d="M-10 -12 L-18 -42 L10 -24 Z" fill="#71717a" stroke="#292524" strokeWidth="4" />
+            <path d="M22 -8 L36 -34 L42 -2 Z" fill="#71717a" stroke="#292524" strokeWidth="4" />
+            <path d="M-26 16 C-44 18 -48 30 -30 34 L-4 34 C4 28 0 18 -26 16 Z" fill="#f8fafc" stroke="#292524" strokeWidth="4" />
+            <circle cx="-4" cy="4" r="4" fill="#fef08a" />
+            <circle cx="18" cy="4" r="4" fill="#fef08a" />
+            <circle cx="-34" cy="24" r="4" fill="#292524" />
+            <path d="M78 30 C104 12 114 30 92 48" fill="none" stroke="#57534e" strokeLinecap="round" strokeWidth="10" />
+          </g>
+        ))}
       </g>
     );
   }
@@ -2298,16 +2848,20 @@ function StatusTile({
   label,
   value,
   className = "",
+  onClick,
+  active = false,
+  controlsId,
 }: {
   icon: ReactNode;
   label: string;
   value: string;
   className?: string;
+  onClick?: () => void;
+  active?: boolean;
+  controlsId?: string;
 }) {
-  return (
-    <div
-      className={`min-w-0 rounded-2xl border border-amber-200 bg-amber-50 p-3 ${className}`}
-    >
+  const contents = (
+    <>
       <div className="flex min-w-0 items-center gap-2 text-amber-900">
         {icon}
         <span className="min-w-0 break-words text-xs font-bold uppercase tracking-[0.14em] sm:tracking-[0.18em]">
@@ -2317,6 +2871,30 @@ function StatusTile({
       <div className="mt-2 break-words text-xl font-black text-stone-950">
         {value}
       </div>
+    </>
+  );
+
+  const tileClassName = `min-w-0 rounded-2xl border border-amber-200 bg-amber-50 p-3 ${className}`;
+
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        className={`${tileClassName} cursor-pointer text-left transition hover:border-amber-300 hover:bg-amber-100 focus-visible:ring-3 focus-visible:ring-amber-400/50 focus-visible:outline-none ${
+          active ? "border-amber-400 bg-amber-100" : ""
+        }`}
+        onClick={onClick}
+        aria-expanded={active}
+        aria-controls={controlsId}
+      >
+        {contents}
+      </button>
+    );
+  }
+
+  return (
+    <div className={tileClassName}>
+      {contents}
     </div>
   );
 }
