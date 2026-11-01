@@ -52,6 +52,9 @@ type PageId =
   | "wolf-outsmarted"
   | "fortified-home"
   | "boar-reinforcements"
+  | "poison-apple-basket"
+  | "apple-sleep"
+  | "apple-thrown-away"
   | "forest-flight"
   | "straw-collapse";
 
@@ -109,7 +112,8 @@ type ComicDetail =
   | "bucket"
   | "smoke"
   | "soup"
-  | "boars";
+  | "boars"
+  | "apples";
 
 type ComicScene = {
   caption: string;
@@ -935,7 +939,7 @@ const storyPages: Record<PageId, StoryPage> = {
     ],
   },
   "fortified-home": {
-    chapter: "Ending",
+    chapter: "Page 22",
     title: "A house ready for the pack",
     paragraphs: [
       "The pigs do not waste the warning. They drop a second bar across the door, wedge braces behind the shutters, scatter thorny rose canes below the windows, and station one pig by the pump, one by the hearth, and one at the peephole.",
@@ -945,10 +949,16 @@ const storyPages: Record<PageId, StoryPage> = {
     house: "Fortified brick home with watched doors and windows",
     wolf: "Pack retreating from a stronger home",
     progress: 100,
-    ending: "safe",
+    choices: [
+      {
+        label: "Sleep behind the bars and inspect the yard at sunrise",
+        next: "poison-apple-basket",
+        hint: "A quiet night can still leave clues in the morning.",
+      },
+    ],
   },
   "boar-reinforcements": {
-    chapter: "Ending",
+    chapter: "Page 22",
     title: "Tusks at the gate",
     paragraphs: [
       "The oldest pig blows the acorn horn kept beside the pantry latch. From the oak ridge come Aunt Bristle, Cousin Rooter, and six wild boar cousins with mud on their hooves and moonlight on their tusks.",
@@ -957,6 +967,62 @@ const storyPages: Record<PageId, StoryPage> = {
     ],
     house: "Brick home guarded by family reinforcements",
     wolf: "Pack backing away from the gate",
+    progress: 100,
+    choices: [
+      {
+        label: "Thank the cousins and check the doorstep in the morning",
+        next: "poison-apple-basket",
+        hint: "The wolf may return with a quieter trick.",
+      },
+    ],
+  },
+  "poison-apple-basket": {
+    chapter: "Page 23",
+    title: "A basket on the step",
+    paragraphs: [
+      "The wolf does not huff when he comes back that night. He creeps through the blue dark, sets a covered basket in front of the house, and pads away before the first rooster stirs.",
+      "Inside the basket, red apples shine as if they were polished with rubies. Hidden under the sweet skins is sleeping powder, fine as flour and bitter as old moonlight.",
+      "In the morning the pigs open the door and find the gift waiting. There is no note, only a few gray hairs caught on the handle and pawprints pressed into the dew.",
+    ],
+    house: "Barred brick home with a strange basket outside",
+    wolf: "Gone from sight, but still scheming",
+    progress: 100,
+    choices: [
+      {
+        label: "Eat the apples because breakfast smells wonderful",
+        next: "apple-sleep",
+        hint: "A pretty gift can hide a dangerous ingredient.",
+      },
+      {
+        label: "Throw the apples away because they are suspicious",
+        next: "apple-thrown-away",
+        hint: "Trust the clues before trusting the treat.",
+      },
+    ],
+  },
+  "apple-sleep": {
+    chapter: "Ending",
+    title: "The nap the wolf wanted",
+    paragraphs: [
+      "The first bite is crisp and sweet. The second bite makes the youngest pig yawn. Soon all three pigs are blinking slowly while the room tilts like a rocking chair.",
+      "They stumble to bar the door, but the sleeping powder is faster. The wolf sneaks back at noon and gets one paw through the opening before the pigs wake in a panic and slam the pantry latch.",
+      "They escape the trap, but only barely. From then on, every unexpected gift waits outside until someone can prove where it came from.",
+    ],
+    house: "Strong home made risky by a careless breakfast",
+    wolf: "Too close while the pigs sleep",
+    progress: 76,
+    ending: "danger",
+  },
+  "apple-thrown-away": {
+    chapter: "Ending",
+    title: "No bite for a bad trick",
+    paragraphs: [
+      "The pigs do not taste a single slice. They tie the basket shut, carry it with tongs to the far compost pit, and wash the doorstep until the powdery sparkle is gone.",
+      "A crow pecks once, sneezes, and flaps away. From behind a blackberry bush comes a frustrated wolfish growl.",
+      "The pigs lock the gate, label the clue in their storybook, and keep breakfast to soup, bread, and apples from trees they know. The house is safe because the pigs remember: suspicion can be wisdom wearing work boots.",
+    ],
+    house: "Clean doorstep and a wiser breakfast table",
+    wolf: "Growling empty-bellied in the brambles",
     progress: 100,
     ending: "safe",
   },
@@ -1289,6 +1355,30 @@ const comicScenes: Record<PageId, ComicScene> = {
     wolf: "pack",
     sound: "Boars!",
   },
+  "poison-apple-basket": {
+    caption: "Morning reveals a shiny apple basket left on the doorstep by the wolf.",
+    mood: "sunny",
+    house: "finished",
+    details: ["apples", "shutters"],
+    wolf: "gone",
+    sound: "Gift?",
+  },
+  "apple-sleep": {
+    caption: "The poisoned apples make the pigs sleepy before they can secure the door.",
+    mood: "storm",
+    house: "kitchen",
+    details: ["apples", "smoke"],
+    wolf: "near",
+    sound: "Zzz...",
+  },
+  "apple-thrown-away": {
+    caption: "The suspicious apples go to the compost pit while the wolf growls in the brambles.",
+    mood: "cozy",
+    house: "kitchen",
+    details: ["apples", "bucket", "soup"],
+    wolf: "gone",
+    sound: "Safe!",
+  },
   "forest-flight": {
     caption: "Running into the woods leaves the strong house behind and the pack too close.",
     mood: "forest",
@@ -1310,21 +1400,26 @@ const comicScenes: Record<PageId, ComicScene> = {
 export default function HomePage() {
   const [pageId, setPageId] = useState<PageId>("start");
   const [history, setHistory] = useState<PageId[]>([]);
+  const [showVisitedPages, setShowVisitedPages] = useState(false);
   const storyRef = useRef<HTMLElement>(null);
   const skipInitialScroll = useRef(true);
   const page = storyPages[pageId];
+  const pagesPanelId = "visited-pages-panel";
 
-  const pagesSeen = useMemo(
-    () => new Set<PageId>([...history, pageId]).size,
+  const visitedPageIds = useMemo(
+    () => Array.from(new Set<PageId>([...history, pageId])),
     [history, pageId],
   );
+  const pagesSeen = visitedPageIds.length;
 
   function choose(next: PageId) {
+    setShowVisitedPages(false);
     setHistory((current) => [...current, pageId]);
     setPageId(next);
   }
 
   function goBack() {
+    setShowVisitedPages(false);
     setHistory((current) => {
       const previous = current.at(-1);
 
@@ -1338,8 +1433,20 @@ export default function HomePage() {
   }
 
   function restart() {
+    setShowVisitedPages(false);
     setPageId("start");
     setHistory([]);
+  }
+
+  function jumpToVisitedPage(next: PageId) {
+    setShowVisitedPages(false);
+
+    if (next === pageId) {
+      return;
+    }
+
+    setHistory((current) => [...current, pageId]);
+    setPageId(next);
   }
 
   useEffect(() => {
@@ -1385,9 +1492,51 @@ export default function HomePage() {
               label="Pages"
               value={`${pagesSeen}`}
               className="col-span-2 sm:col-span-1"
+              onClick={() => setShowVisitedPages((isOpen) => !isOpen)}
+              active={showVisitedPages}
+              controlsId={pagesPanelId}
             />
           </div>
         </header>
+
+        {showVisitedPages ? (
+          <section
+            id={pagesPanelId}
+            className="mb-4 rounded-[1.75rem] border border-amber-200 bg-white/85 p-4 shadow-sm backdrop-blur sm:mb-5 sm:p-5"
+          >
+            <div className="mb-4 min-w-0">
+              <h2 className="text-lg font-black text-stone-950">
+                Completed pages
+              </h2>
+              <p className="mt-1 text-sm leading-6 text-stone-700">
+                Jump back to any story page you have already reached.
+              </p>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {visitedPageIds.map((visitedPageId) => {
+                const visitedPage = storyPages[visitedPageId];
+                const isCurrentPage = visitedPageId === pageId;
+
+                return (
+                  <button
+                    key={visitedPageId}
+                    type="button"
+                    disabled={isCurrentPage}
+                    className="min-w-0 rounded-2xl border border-stone-200 bg-stone-50 p-3 text-left transition hover:border-amber-300 hover:bg-amber-50 focus-visible:ring-3 focus-visible:ring-amber-400/50 focus-visible:outline-none disabled:cursor-default disabled:border-amber-300 disabled:bg-amber-100"
+                    onClick={() => jumpToVisitedPage(visitedPageId)}
+                  >
+                    <span className="block text-xs font-black tracking-[0.14em] text-amber-800 uppercase">
+                      {isCurrentPage ? "Current page" : visitedPage.chapter}
+                    </span>
+                    <span className="mt-1 block text-sm leading-5 font-black break-words text-stone-950">
+                      {visitedPage.title}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        ) : null}
 
         <div className="grid min-w-0 flex-1 gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <article
@@ -1710,6 +1859,10 @@ function SceneSpotlight({ scene }: { scene: ComicScene }) {
     return <BoarSpotlight />;
   }
 
+  if (scene.details.includes("apples")) {
+    return <AppleSpotlight />;
+  }
+
   if (scene.wolf === "pack") {
     return <PackSpotlight />;
   }
@@ -1819,6 +1972,29 @@ function BoarSpotlight() {
       <path d="M70 198 C86 190 86 216 66 208" fill="#fef3c7" stroke="#292524" strokeWidth="3" />
       <circle cx="66" cy="188" r="4" fill="#292524" />
       <path d="M156 176 C182 152 196 182 172 196" fill="none" stroke="#7c2d12" strokeLinecap="round" strokeWidth="8" />
+    </SpotlightShell>
+  );
+}
+
+function AppleSpotlight() {
+  return (
+    <SpotlightShell title="check gifts">
+      <path d="M62 212 H174 L160 254 H76 Z" fill="#92400e" stroke="#292524" strokeWidth="4" />
+      <path d="M74 212 C82 176 154 176 162 212" fill="none" stroke="#292524" strokeWidth="5" />
+      {[92, 118, 144].map((x) => (
+        <g key={x}>
+          <circle cx={x} cy="194" r="19" fill="#dc2626" stroke="#292524" strokeWidth="4" />
+          <path d={`M${x} 176 C${x + 4} 164 ${x + 16} 164 ${x + 18} 172`} fill="none" stroke="#166534" strokeLinecap="round" strokeWidth="5" />
+        </g>
+      ))}
+      <g fill="#fef3c7" opacity="0.9">
+        <circle cx="86" cy="168" r="4" />
+        <circle cx="132" cy="160" r="3" />
+        <circle cx="164" cy="184" r="4" />
+      </g>
+      <text x="118" y="244" textAnchor="middle" className="fill-amber-100 text-[15px] font-black">
+        powder?
+      </text>
     </SpotlightShell>
   );
 }
@@ -2134,6 +2310,7 @@ function ComicDetails({ details }: { details: ComicDetail[] }) {
       {details.includes("smoke") ? <SmokeDetail /> : null}
       {details.includes("soup") ? <SoupDetail /> : null}
       {details.includes("boars") ? <BoarCousinsDetail /> : null}
+      {details.includes("apples") ? <AppleBasketDetail /> : null}
     </g>
   );
 }
@@ -2316,6 +2493,26 @@ function BoarCousinsDetail() {
   );
 }
 
+function AppleBasketDetail() {
+  return (
+    <g>
+      <path d="M444 232 H536 L522 286 H458 Z" fill="#92400e" stroke="#292524" strokeWidth="5" />
+      <path d="M458 232 C466 194 514 194 522 232" fill="none" stroke="#292524" strokeWidth="5" />
+      {[464, 484, 504, 524].map((x, index) => (
+        <g key={x}>
+          <circle cx={x} cy={224 - (index % 2) * 12} r="15" fill="#dc2626" stroke="#292524" strokeWidth="3" />
+          <path d={`M${x + 2} ${205 - (index % 2) * 12} C${x + 8} ${198 - (index % 2) * 12} ${x + 18} ${200 - (index % 2) * 12} ${x + 18} ${208 - (index % 2) * 12}`} fill="none" stroke="#166534" strokeLinecap="round" strokeWidth="4" />
+        </g>
+      ))}
+      <g fill="#fef3c7" opacity="0.9">
+        <circle cx="452" cy="204" r="4" />
+        <circle cx="496" cy="194" r="3" />
+        <circle cx="536" cy="220" r="4" />
+      </g>
+    </g>
+  );
+}
+
 function ComicPig({
   x,
   y,
@@ -2483,16 +2680,20 @@ function StatusTile({
   label,
   value,
   className = "",
+  onClick,
+  active = false,
+  controlsId,
 }: {
   icon: ReactNode;
   label: string;
   value: string;
   className?: string;
+  onClick?: () => void;
+  active?: boolean;
+  controlsId?: string;
 }) {
-  return (
-    <div
-      className={`min-w-0 rounded-2xl border border-amber-200 bg-amber-50 p-3 ${className}`}
-    >
+  const contents = (
+    <>
       <div className="flex min-w-0 items-center gap-2 text-amber-900">
         {icon}
         <span className="min-w-0 break-words text-xs font-bold uppercase tracking-[0.14em] sm:tracking-[0.18em]">
@@ -2502,6 +2703,30 @@ function StatusTile({
       <div className="mt-2 break-words text-xl font-black text-stone-950">
         {value}
       </div>
+    </>
+  );
+
+  const tileClassName = `min-w-0 rounded-2xl border border-amber-200 bg-amber-50 p-3 ${className}`;
+
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        className={`${tileClassName} cursor-pointer text-left transition hover:border-amber-300 hover:bg-amber-100 focus-visible:ring-3 focus-visible:ring-amber-400/50 focus-visible:outline-none ${
+          active ? "border-amber-400 bg-amber-100" : ""
+        }`}
+        onClick={onClick}
+        aria-expanded={active}
+        aria-controls={controlsId}
+      >
+        {contents}
+      </button>
+    );
+  }
+
+  return (
+    <div className={tileClassName}>
+      {contents}
     </div>
   );
 }
